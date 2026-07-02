@@ -106,7 +106,7 @@ export default function RootLayout({
       <body
         className={`${lora.variable} font-sans antialiased bg-background text-foreground`}
       >
-        <main className="max-w-3xl mx-auto min-h-screen px-3 md:px-4 py-8 md:py-10 flex flex-col gap-3">
+        <main className="max-w-3xl mx-auto min-h-screen px-3 md:px-4 pt-8 pb-24 md:pt-10 md:pb-28 flex flex-col gap-3">
           {children}
         </main>
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden md:block">

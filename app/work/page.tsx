@@ -88,7 +88,7 @@ export default function Work() {
               href={work.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="absolute top-8 right-0 text-muted-text hover:text-accent transition-colors"
+              className="absolute top-8 right-0 inline-flex items-center justify-center p-2.5 -m-2.5 text-muted-text hover:text-accent transition-colors"
             >
               <ExternalLink size={16} />
             </a>

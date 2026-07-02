@@ -88,20 +88,26 @@ const FloatingDockMobile = ({
                     target={item.socialLink ? "_blank" : undefined}
                     rel={item.socialLink ? "noopener noreferrer" : undefined}
                     onClick={playClickSound}
-                    className="relative h-10 w-10 rounded-full bg-background flex items-center justify-center hover:text-accent transition-colors [&_svg]:w-5 [&_svg]:h-5"
-                    style={{
-                      color: isActive ? "var(--accent)" : "var(--foreground)",
-                      border: "1px solid var(--hairline)",
-                      boxShadow: "0 4px 20px rgba(28, 22, 16, 0.12)",
-                    }}
+                    className="inline-flex items-center justify-center p-0.5 -m-0.5"
                   >
-                    {item.icon}
-                    {isActive && (
-                      <span
-                        className="absolute -bottom-1.5 h-1 w-1 rounded-full"
-                        style={{ background: "var(--accent)" }}
-                      />
-                    )}
+                    <span
+                      className="relative h-10 w-10 rounded-full bg-background flex items-center justify-center hover:text-accent transition-colors [&_svg]:w-5 [&_svg]:h-5"
+                      style={{
+                        color: isActive
+                          ? "var(--accent)"
+                          : "var(--foreground)",
+                        border: "1px solid var(--hairline)",
+                        boxShadow: "0 4px 20px rgba(28, 22, 16, 0.12)",
+                      }}
+                    >
+                      {item.icon}
+                      {isActive && (
+                        <span
+                          className="absolute -bottom-1.5 h-1 w-1 rounded-full"
+                          style={{ background: "var(--accent)" }}
+                        />
+                      )}
+                    </span>
                   </Wrapper>
                 </motion.div>
               );
@@ -114,7 +120,7 @@ const FloatingDockMobile = ({
           setOpen(!open);
           playClickSound();
         }}
-        className="h-10 w-10 rounded-full bg-background flex items-center justify-center text-foreground"
+        className="h-11 w-11 rounded-full bg-background flex items-center justify-center text-foreground"
         style={{
           border: "1px solid var(--hairline)",
           boxShadow: "0 4px 20px rgba(28, 22, 16, 0.12)",
@@ -228,6 +234,7 @@ function IconContainer({
       target={socialLink ? "_blank" : undefined}
       rel={socialLink ? "noopener noreferrer" : undefined}
       onClick={playClickSound}
+      className="inline-flex items-center justify-center p-0.5 -m-0.5"
     >
       <motion.div
         ref={ref}

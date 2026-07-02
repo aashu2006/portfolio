@@ -69,7 +69,7 @@ export default function Projects() {
         whileInView="show"
         className="flex flex-col mt-2"
       >
-        {projects.map((project) => (
+        {projects.map((project, index) => (
           <motion.div
             key={project.title}
             variants={childVariant}
@@ -82,6 +82,7 @@ export default function Projects() {
                 fill
                 sizes="(max-width: 640px) 100vw, 144px"
                 alt={project.title}
+                priority={index === 0}
                 className="object-cover transition-all duration-400 ease-out grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105"
               />
             </div>
@@ -103,7 +104,7 @@ export default function Projects() {
                       href={project.githubLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-accent transition-colors"
+                      className="inline-flex items-center justify-center p-2.5 -m-2.5 hover:text-accent transition-colors"
                     >
                       <GithubIcon size={18} />
                     </a>
@@ -113,7 +114,7 @@ export default function Projects() {
                       href={project.liveLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-accent transition-colors"
+                      className="inline-flex items-center justify-center p-2.5 -m-2.5 hover:text-accent transition-colors"
                     >
                       <ExternalLinkIcon size={18} />
                     </a>
