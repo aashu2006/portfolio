@@ -66,9 +66,34 @@ const items: DockItemsType[] = [
 ];
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://akshatpatil.vercel.app"),
   title: "akshat",
   description:
-    "a 19 year old CS undergrad, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26.",
+    "19, CS undergrad, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26 — building things, contributing to open source.",
+  openGraph: {
+    title: "akshat",
+    description:
+      "19, CS undergrad, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26.",
+    url: "https://akshatpatil.vercel.app",
+    siteName: "akshat",
+    images: [
+      {
+        url: "/akshat.jpg",
+        width: 800,
+        height: 800,
+        alt: "Akshat Patil",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "akshat",
+    description:
+      "19, CS undergrad, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26.",
+    images: ["/akshat.jpg"],
+  },
 };
 
 export default function RootLayout({

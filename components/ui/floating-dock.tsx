@@ -7,6 +7,7 @@
 
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { IconLayoutNavbarCollapse } from "@tabler/icons-react";
 import {
   AnimatePresence,
@@ -56,6 +57,7 @@ const FloatingDockMobile = ({
   className?: string;
 }) => {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <div className={cn("relative block md:hidden", className)}>
@@ -67,6 +69,8 @@ const FloatingDockMobile = ({
           >
             {items.map((item, idx) => {
               const Wrapper = item.socialLink ? "a" : Link;
+              const isActive = !item.socialLink && pathname === item.href;
+
               return (
                 <motion.div
                   key={item.title}
@@ -84,13 +88,20 @@ const FloatingDockMobile = ({
                     target={item.socialLink ? "_blank" : undefined}
                     rel={item.socialLink ? "noopener noreferrer" : undefined}
                     onClick={playClickSound}
-                    className="h-10 w-10 rounded-full bg-background flex items-center justify-center text-foreground hover:text-accent transition-colors [&_svg]:w-5 [&_svg]:h-5"
+                    className="relative h-10 w-10 rounded-full bg-background flex items-center justify-center hover:text-accent transition-colors [&_svg]:w-5 [&_svg]:h-5"
                     style={{
+                      color: isActive ? "var(--accent)" : "var(--foreground)",
                       border: "1px solid var(--hairline)",
                       boxShadow: "0 4px 20px rgba(28, 22, 16, 0.12)",
                     }}
                   >
                     {item.icon}
+                    {isActive && (
+                      <span
+                        className="absolute -bottom-1.5 h-1 w-1 rounded-full"
+                        style={{ background: "var(--accent)" }}
+                      />
+                    )}
                   </Wrapper>
                 </motion.div>
               );
@@ -123,6 +134,7 @@ const FloatingDockDesktop = ({
   className?: string;
 }) => {
   const mouseX = useMotionValue(Infinity);
+  const pathname = usePathname();
 
   return (
     <motion.div
@@ -152,7 +164,11 @@ const FloatingDockDesktop = ({
                 style={{ background: "var(--hairline)" }}
               />
             )}
-            <IconContainer mouseX={mouseX} {...item} />
+            <IconContainer
+              mouseX={mouseX}
+              isActive={!item.socialLink && pathname === item.href}
+              {...item}
+            />
           </div>
         );
       })}
@@ -166,8 +182,10 @@ function IconContainer({
   icon,
   href,
   socialLink,
+  isActive,
 }: {
   mouseX: MotionValue;
+  isActive: boolean;
 } & DockItemsType) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -213,10 +231,14 @@ function IconContainer({
     >
       <motion.div
         ref={ref}
-        style={{ width, height }}
+        style={{
+          width,
+          height,
+          color: isActive ? "var(--accent)" : "var(--foreground)",
+        }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="aspect-square rounded-full bg-transparent flex items-center justify-center relative text-foreground hover:text-accent transition-colors"
+        className="aspect-square rounded-full bg-transparent flex items-center justify-center relative hover:text-accent transition-colors"
       >
         <AnimatePresence>
           {hovered && (
@@ -241,6 +263,12 @@ function IconContainer({
         >
           {icon}
         </motion.div>
+        {isActive && (
+          <span
+            className="absolute -bottom-1.5 h-1 w-1 rounded-full"
+            style={{ background: "var(--accent)" }}
+          />
+        )}
       </motion.div>
     </Wrapper>
   );

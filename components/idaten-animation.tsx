@@ -1,14 +1,16 @@
 "use client";
 
-import { motion, useAnimationControls } from "motion/react";
+import { motion, useAnimationControls, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
 
 export const IdatenAnimation = () => {
   const revControls = useAnimationControls();
+  const shouldReduceMotion = useReducedMotion();
   const [isRevving, setIsRevving] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleRev = async () => {
+    if (shouldReduceMotion) return;
     if (isRevving) return;
     setIsRevving(true);
     await revControls.start({
@@ -46,22 +48,30 @@ export const IdatenAnimation = () => {
       {/* Flame Kaiser bike — loops left to right across the full viewport */}
       <motion.div
         className="absolute bottom-5"
-        animate={{
-          x: ["-150px", "calc(100vw + 150px)"],
-          y: [0, -4, 0, 4, 0],
-        }}
-        transition={{
-          x: {
-            duration: 9,
-            repeat: Infinity,
-            ease: "linear",
-          },
-          y: {
-            duration: 0.45,
-            repeat: Infinity,
-            ease: "easeInOut",
-          },
-        }}
+        animate={
+          shouldReduceMotion
+            ? { x: "20px", y: 0 }
+            : {
+                x: ["-150px", "calc(100vw + 150px)"],
+                y: [0, -4, 0, 4, 0],
+              }
+        }
+        transition={
+          shouldReduceMotion
+            ? { duration: 0 }
+            : {
+                x: {
+                  duration: 9,
+                  repeat: Infinity,
+                  ease: "linear",
+                },
+                y: {
+                  duration: 0.45,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+              }
+        }
       >
         {/* Rev/shake wrapper — only this responds to click */}
         <motion.div
