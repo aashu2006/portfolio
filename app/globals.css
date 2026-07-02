@@ -1,26 +1,62 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f3ea;        /* warm paper, lighter than v1 */
+  --foreground: #1c1610;        /* ink black */
+  --accent: #b8341a;            /* deeper burgundy ember red */
+  --muted-text: #6b5d4f;        /* warm gray-brown for secondary text */
+  --hairline: rgba(28, 22, 16, 0.15); /* thin divider lines */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-accent: var(--accent);
+  --color-muted-text: var(--muted-text);
+  --color-hairline: var(--hairline);
+  --font-sans: var(--font-serif), ui-serif, Georgia, "Times New Roman", serif;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* Editorial hairline divider */
+.editorial-divider {
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* Editorial tag — plain text, underline on hover */
+.editorial-tag {
+  font-size: 0.875rem;
+  color: var(--muted-text);
+  padding: 0.25rem 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  cursor: default;
+}
+
+.editorial-tag:hover {
+  border-bottom-color: var(--accent);
+  color: var(--foreground);
+}
+
+/* Pulsing dot animation */
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.15);
+  }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2.5s ease-in-out infinite;
 }
