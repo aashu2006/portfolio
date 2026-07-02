@@ -66,9 +66,9 @@ const items: DockItemsType[] = [
 ];
 
 export const metadata: Metadata = {
-  title: "Akshat Patil — Systems & Graphics Engineer",
+  title: "akshat",
   description:
-    "Portfolio of Akshat Patil — systems and graphics engineer, open source contributor to p5.js, KubeStellar, and Hiero. Building things with WebGL, WebGPU, and distributed systems.",
+    "a 19 year old CS undergrad, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26.",
 };
 
 export default function RootLayout({
