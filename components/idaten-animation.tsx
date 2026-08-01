@@ -26,10 +26,11 @@ export const IdatenAnimation = () => {
       ref={containerRef}
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
       transition={{ duration: 1, delay: 0.2 }}
-      className="w-full relative h-28 mt-12 overflow-hidden"
+      className="w-full relative h-28 mt-16 overflow-hidden"
     >
-      {/* Road / track — wavy ink stroke matching the headers */}
+      {/* Road / track: wavy ink stroke matching the headers */}
       <div className="absolute bottom-6 left-0 right-0 h-3">
         <svg
           className="w-full h-full"
@@ -45,7 +46,7 @@ export const IdatenAnimation = () => {
         </svg>
       </div>
 
-      {/* Flame Kaiser bike — loops left to right across the full viewport */}
+      {/* Flame Kaiser bike: loops left to right across the full viewport */}
       <motion.div
         className="absolute bottom-5"
         animate={
@@ -73,7 +74,7 @@ export const IdatenAnimation = () => {
               }
         }
       >
-        {/* Rev/shake wrapper — only this responds to click */}
+        {/* Rev/shake wrapper: only this responds to click */}
         <motion.div
           animate={revControls}
           onClick={handleRev}
@@ -87,9 +88,7 @@ export const IdatenAnimation = () => {
             height={90}
             className="select-none pointer-events-auto"
             draggable={false}
-            style={{
-              filter: "drop-shadow(2px 4px 6px rgba(28,22,16,0.1))",
-            }}
+            style={{ filter: "var(--sprite-shadow)" }}
           />
         </motion.div>
       </motion.div>

@@ -1,46 +1,148 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f7f3ea;        /* warm paper, lighter than v1 */
+/* ---------------------------------------------------------------
+   Design tokens
+   Light = warm paper / ink. Dark = warm ink / bone.
+   Theme is set on <html data-theme> by the inline script in layout.
+   --------------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+  --background: #f7f3ea;        /* warm paper */
+  --surface: rgba(247, 243, 234, 0.86); /* translucent dock / overlays */
+  --surface-raised: #fdfaf3;    /* opaque panels that sit above the page */
   --foreground: #1c1610;        /* ink black */
-  --accent: #b8341a;            /* deeper burgundy ember red */
-  --muted-text: #6b5d4f;        /* warm gray-brown for secondary text */
-  --hairline: rgba(28, 22, 16, 0.15); /* thin divider lines */
+  --accent: #b8341a;            /* ember red */
+  --muted-text: #6b5d4f;        /* secondary text */
+  --faint-text: #8b7c6b;        /* micro labels, dates */
+  --hairline: rgba(28, 22, 16, 0.14);
+  --hairline-strong: rgba(28, 22, 16, 0.3);
+  --hover-surface: rgba(28, 22, 16, 0.05);
+  --scrim: rgba(28, 22, 16, 0.28);
+  --shadow-float: 0 6px 28px rgba(28, 22, 16, 0.1);
+  --sprite-shadow: drop-shadow(2px 4px 6px rgba(28, 22, 16, 0.12));
+  --noise-opacity: 0.045;
+  --ink-alpha: 0.38;            /* hero particle opacity, read from JS */
+  color-scheme: light;
+}
+
+/* Dark is NOT a mirror of light. The previous version copied light mode's
+   chroma budget (~0.01) onto a surface at L≈0.18, where that little chroma is
+   invisible, so the "warm paper" identity vanished and it read as flat grey.
+   Chroma is not lightness-symmetric: it is spent here where luminance can
+   actually carry it (text, accent) and withheld from the near-black void. */
+[data-theme="dark"] {
+  --background: #100e0c;        /* deeper, near-neutral void */
+  --surface: rgba(27, 23, 20, 0.88);
+  --surface-raised: #1b1714;    /* elevation comes from value, not shadow */
+  --foreground: #eae0cc;        /* warm cream: ~2x the chroma of the old bone */
+  --accent: #e05a38;            /* richer ember, closer to the light-mode red */
+  --muted-text: #ad9a7e;
+  --faint-text: #9b8a71;        /* lifted: 11px micro-labels were ~4.6:1 */
+  --hairline: rgba(234, 224, 204, 0.16);
+  --hairline-strong: rgba(234, 224, 204, 0.32);
+  --hover-surface: rgba(234, 224, 204, 0.07);
+  --scrim: rgba(12, 9, 7, 0.66); /* warm, matching everything else */
+  --shadow-float: 0 6px 28px rgba(0, 0, 0, 0.6);
+  --sprite-shadow: drop-shadow(2px 6px 14px rgba(0, 0, 0, 0.55));
+  /* Grey grain composited over near-black LIGHTENS and neutralises it, which
+     was the largest desaturating force on the largest surface. Dialled back. */
+  --noise-opacity: 0.03;
+  --ink-alpha: 0.34;
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-muted-text: var(--muted-text);
+  --color-faint-text: var(--faint-text);
   --color-hairline: var(--hairline);
-  --font-sans: var(--font-serif), ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    sans-serif;
+  --font-serif: var(--font-lora), ui-serif, Georgia, "Times New Roman", serif;
+}
+
+/* ---------------------------------------------------------------
+   Base
+   --------------------------------------------------------------- */
+html {
+  background-color: var(--background);
+  /* The hero ink field is full-bleed inside a centred column. `clip` contains
+     it without the sticky-positioning side effects of `hidden`. */
+  overflow-x: clip;
 }
 
 body {
   background-color: var(--background);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  overflow-x: clip;
   color: var(--foreground);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* Paper grain: sits above the flat background, below all content */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: var(--noise-opacity);
+}
+
+/* Headings carry the serif; body copy stays sans for small-size clarity */
+h1,
+h2,
+h3,
+h4,
+blockquote {
+  font-family: var(--font-serif);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--background);
 }
 
 a:focus-visible,
 button:focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline-offset: 3px;
+  border-radius: 3px;
 }
 
-/* Editorial hairline divider */
+/* ---------------------------------------------------------------
+   Editorial primitives
+   --------------------------------------------------------------- */
+
+/* Small uppercase eyebrow above a section */
+.label-micro {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint-text);
+}
+
 .editorial-divider {
   border-bottom: 1px solid var(--hairline);
 }
 
-/* Editorial tag — plain text, underline on hover */
+/* Inline tag: plain text, accent rule on hover */
 .editorial-tag {
-  font-size: 0.875rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 450;
   color: var(--muted-text);
-  padding: 0.25rem 0;
+  padding-bottom: 0.125rem;
   border-bottom: 1px solid transparent;
   transition: border-color 0.2s ease, color 0.2s ease;
   cursor: default;
@@ -51,7 +153,74 @@ button:focus-visible {
   color: var(--foreground);
 }
 
-/* Pulsing dot animation */
+/* Quiet text link: underline thickens toward the accent on hover */
+.link-quiet {
+  color: var(--muted-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--hairline-strong);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.link-quiet:hover {
+  color: var(--foreground);
+  text-decoration-color: var(--accent);
+}
+
+/* Interactive list row: an accent rule grows in the margin on hover, instead
+   of the row lighting up as a block. Keeps the hairline grid intact. */
+.row-marker {
+  position: relative;
+}
+
+.row-marker::before {
+  content: "";
+  position: absolute;
+  left: -0.875rem;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  transform: translateY(-50%);
+  background: var(--accent);
+  transition: height 0.25s ease;
+}
+
+.row-marker:hover::before {
+  height: 58%;
+}
+
+/* "all work →" style affordance at section headers */
+.section-link {
+  font-size: 0.8125rem;
+  color: var(--muted-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.section-link:hover {
+  color: var(--accent);
+}
+
+.section-link svg {
+  transition: transform 0.2s ease;
+}
+
+.section-link:hover svg {
+  transform: translate(2px, -2px);
+}
+
+/* Theme toggle icon swap: driven by CSS so there is no post-hydration flash */
+[data-theme="dark"] .theme-icon-to-dark,
+[data-theme="light"] .theme-icon-to-light {
+  display: none;
+}
+
+/* ---------------------------------------------------------------
+   Motion
+   --------------------------------------------------------------- */
 @keyframes pulse-dot {
   0%,
   100% {

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Lora } from "next/font/google";
+import { Inter, Lora } from "next/font/google";
 import "./globals.css";
 import { FloatingDock } from "@/components/ui/floating-dock";
+import { CommandPalette } from "@/components/ui/command-palette";
 import {
   Home,
   Layers,
@@ -15,9 +16,16 @@ import { DockItemsType } from "@/types";
 
 const lora = Lora({
   subsets: ["latin"],
-  variable: "--font-serif",
+  variable: "--font-lora",
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 const items: DockItemsType[] = [
@@ -65,11 +73,17 @@ const items: DockItemsType[] = [
   },
 ];
 
+/**
+ * Applies the stored (or system) theme while the HTML is still parsing, so the
+ * first paint is already correct: no light-mode flash on a dark-mode visit.
+ */
+const themeScript = `(function(){try{var s=localStorage.getItem("theme");var t=s==="light"||s==="dark"?s:(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`;
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://akshatpatil.vercel.app"),
   title: "akshat",
   description:
-    "19, CS undergrad, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26 — building things, contributing to open source.",
+    "19, CS undergrad, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26, building things, contributing to open source.",
   openGraph: {
     title: "akshat",
     description:
@@ -102,19 +116,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body
-        className={`${lora.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${lora.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
       >
-        <main className="max-w-3xl mx-auto min-h-screen px-3 md:px-4 pt-8 pb-24 md:pt-10 md:pb-28 flex flex-col gap-3">
+        <main className="relative z-10 max-w-2xl mx-auto min-h-screen px-5 sm:px-6 pt-14 pb-28 md:pt-20 md:pb-32">
           {children}
         </main>
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden md:block">
           <FloatingDock items={items} />
         </div>
-        <div className="fixed bottom-6 right-6 z-50 md:hidden">
+        <div className="fixed bottom-6 right-5 z-50 md:hidden">
           <FloatingDock items={items} />
         </div>
+        <CommandPalette />
       </body>
     </html>
   );
