@@ -76,7 +76,8 @@ struct Particle {
   vel: vec2f,
   seed: f32,
   size: f32,
-  pad: vec2f,
+  depth: f32,  // 0 = far, 1 = near. Drives scale, alpha, softness, parallax.
+  pad: f32,
 };
 
 struct Uniforms {
@@ -109,10 +110,14 @@ fn main(@builtin(global_invocation_id) gid: vec3u) {
   }
 
   var p = particles[index];
+  // Offsetting the field sample by depth decorrelates the layers, so near and
+  // far particles follow different currents instead of moving as one sheet.
   // Not "target": that is a WGSL reserved keyword and fails to compile.
-  let steer = flow(p.pos, u.time) * 0.05 * (0.45 + p.seed);
+  let steer = flow(p.pos + vec2f(p.depth * 3.1, p.depth * -2.3), u.time)
+    * 0.05 * (0.45 + p.seed);
   p.vel = mix(p.vel, steer, 0.05);
-  p.pos = p.pos + p.vel * u.dt;
+  // Parallax: near layers travel faster across the frame than far ones.
+  p.pos = p.pos + p.vel * u.dt * mix(0.45, 1.5, p.depth);
 
   // Wrap slightly outside clip space so re-entry happens off screen.
   if (p.pos.x > 1.2) { p.pos.x = -1.2; }
@@ -130,7 +135,8 @@ struct Particle {
   vel: vec2f,
   seed: f32,
   size: f32,
-  pad: vec2f,
+  depth: f32,  // 0 = far, 1 = near. Drives scale, alpha, softness, parallax.
+  pad: f32,
 };
 
 struct Uniforms {
@@ -152,6 +158,7 @@ struct VSOut {
   @builtin(position) position: vec4f,
   @location(0) uv: vec2f,
   @location(1) alpha: f32,
+  @location(2) softness: f32,
 };
 
 @vertex
@@ -168,7 +175,11 @@ fn vs(
   );
 
   let p = particles[instanceIndex];
-  let radius = u.pointSize * p.size;
+
+  // Cheap perspective: no matrix, just scale and fade by depth. Far particles
+  // are small, dim and soft-edged; near ones are large, bright and crisp.
+  let persp = mix(0.5, 1.45, p.depth);
+  let radius = u.pointSize * p.size * persp;
 
   var out: VSOut;
   out.position = vec4f(
@@ -177,7 +188,9 @@ fn vs(
     1.0
   );
   out.uv = corner;
-  out.alpha = 0.2 + 0.8 * p.seed;
+  out.alpha = (0.2 + 0.8 * p.seed) * mix(0.28, 1.0, p.depth);
+  // Inner edge of the falloff: lower means a softer, more out-of-focus dot.
+  out.softness = mix(0.62, 0.22, p.depth);
   return out;
 }
 
@@ -187,7 +200,7 @@ fn fs(in: VSOut) -> @location(0) vec4f {
   if (d > 1.0) {
     discard;
   }
-  let a = smoothstep(1.0, 0.3, d) * in.alpha * u.color.a;
+  let a = smoothstep(1.0, in.softness, d) * in.alpha * u.color.a;
   return vec4f(u.color.rgb * a, a); // premultiplied
 }
 `;
@@ -230,6 +243,9 @@ const initWebGPU = async (
     seedData[o + 3] = 0; // vel.y
     seedData[o + 4] = Math.random(); // seed
     seedData[o + 5] = 0.45 + Math.random() * 0.9; // size
+    // Biased toward the far plane so the near layer stays sparse and the
+    // field keeps receding behind the type rather than crowding it.
+    seedData[o + 6] = Math.random() ** 1.6; // depth
   }
 
   const particleBuffer = device.createBuffer({
@@ -455,16 +471,21 @@ const initWebGPU = async (
 /* ------------------------------------------------------------------ WebGL2 */
 
 const VERT_GLSL = `#version 300 es
-in vec3 a_seed;
+in vec4 a_seed; // xy = base position, z = per-particle seed, w = depth
 uniform float u_time;
 uniform float u_aspect;
 uniform float u_pointSize;
 out float v_alpha;
+out float v_softness;
 
 void main() {
   float t = u_time;
+  float depth = a_seed.w;
+  float persp = mix(0.5, 1.45, depth);
+  float parallax = mix(0.45, 1.5, depth);
+
   vec2 p = a_seed.xy;
-  p.x = fract(p.x + t * 0.010 * (0.4 + a_seed.z));
+  p.x = fract(p.x + t * 0.010 * (0.4 + a_seed.z) * parallax);
   p.y = fract(p.y + t * 0.004);
 
   vec2 q = p * 2.0 - 1.0;
@@ -473,14 +494,17 @@ void main() {
   q += vec2(a, b) * 0.05;
 
   gl_Position = vec4(q, 0.0, 1.0);
-  gl_PointSize = u_pointSize * (0.6 + a_seed.z) * clamp(u_aspect, 0.6, 1.6);
-  v_alpha = 0.2 + 0.8 * a_seed.z;
+  gl_PointSize =
+    u_pointSize * (0.6 + a_seed.z) * persp * clamp(u_aspect, 0.6, 1.6);
+  v_alpha = (0.2 + 0.8 * a_seed.z) * mix(0.28, 1.0, depth);
+  v_softness = mix(0.62, 0.22, depth);
 }
 `;
 
 const FRAG_GLSL = `#version 300 es
 precision mediump float;
 in float v_alpha;
+in float v_softness;
 uniform vec4 u_color;
 out vec4 outColor;
 
@@ -490,7 +514,7 @@ void main() {
   if (d > 1.0) {
     discard;
   }
-  float a = smoothstep(1.0, 0.3, d) * v_alpha * u_color.a;
+  float a = smoothstep(1.0, v_softness, d) * v_alpha * u_color.a;
   outColor = vec4(u_color.rgb * a, a); // premultiplied
 }
 `;
@@ -536,11 +560,12 @@ const initWebGL2 = (
   }
 
   const count = particleCountFor(width, height);
-  const seeds = new Float32Array(count * 3);
+  const seeds = new Float32Array(count * 4);
   for (let i = 0; i < count; i += 1) {
-    seeds[i * 3] = Math.random();
-    seeds[i * 3 + 1] = Math.random();
-    seeds[i * 3 + 2] = Math.random();
+    seeds[i * 4] = Math.random();
+    seeds[i * 4 + 1] = Math.random();
+    seeds[i * 4 + 2] = Math.random();
+    seeds[i * 4 + 3] = Math.random() ** 1.6; // depth, biased far
   }
 
   const vao = gl.createVertexArray();
@@ -550,7 +575,7 @@ const initWebGL2 = (
   gl.bufferData(gl.ARRAY_BUFFER, seeds, gl.STATIC_DRAW);
   const location = gl.getAttribLocation(program, "a_seed");
   gl.enableVertexAttribArray(location);
-  gl.vertexAttribPointer(location, 3, gl.FLOAT, false, 0, 0);
+  gl.vertexAttribPointer(location, 4, gl.FLOAT, false, 0, 0);
   gl.bindVertexArray(null);
 
   const uTime = gl.getUniformLocation(program, "u_time");
