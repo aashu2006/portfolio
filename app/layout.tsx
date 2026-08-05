@@ -1,95 +1,32 @@
 import type { Metadata } from "next";
-import { Inter, Lora } from "next/font/google";
+import { Quicksand, Archivo } from "next/font/google";
 import "./globals.css";
-import { FloatingDock } from "@/components/ui/floating-dock";
-import { CommandPalette } from "@/components/ui/command-palette";
-import {
-  Home,
-  Layers,
-  Code2,
-  BookOpen,
-  Twitter,
-  Github,
-  Linkedin,
-} from "lucide-react";
-import { DockItemsType } from "@/types";
 
-const lora = Lora({
+/** Body copy: rounded geometric sans. */
+const quicksand = Quicksand({
   subsets: ["latin"],
-  variable: "--font-lora",
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
+  variable: "--font-quicksand",
   display: "swap",
 });
 
-const inter = Inter({
+/** Display face for h1/h2/h3 and buttons: tight retro grotesque. */
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-archivo",
   display: "swap",
 });
-
-const items: DockItemsType[] = [
-  {
-    title: "Home",
-    icon: <Home />,
-    socialLink: false,
-    href: "/",
-  },
-  {
-    title: "Projects",
-    icon: <Layers />,
-    socialLink: false,
-    href: "/projects",
-  },
-  {
-    title: "Work",
-    icon: <Code2 />,
-    socialLink: false,
-    href: "/work",
-  },
-  {
-    title: "Blog",
-    icon: <BookOpen />,
-    socialLink: false,
-    href: "/blog",
-  },
-  {
-    title: "Twitter",
-    icon: <Twitter />,
-    socialLink: true,
-    href: "https://x.com/softaspause",
-  },
-  {
-    title: "Github",
-    icon: <Github />,
-    socialLink: true,
-    href: "https://github.com/aashu2006",
-  },
-  {
-    title: "LinkedIn",
-    icon: <Linkedin />,
-    socialLink: true,
-    href: "https://linkedin.com/in/akshatpatil107",
-  },
-];
-
-/**
- * Applies the stored (or system) theme while the HTML is still parsing, so the
- * first paint is already correct: no light-mode flash on a dark-mode visit.
- */
-const themeScript = `(function(){try{var s=localStorage.getItem("theme");var t=s==="light"||s==="dark"?s:(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://akshatpatil.vercel.app"),
-  title: "akshat",
+  title: "akshat patil",
   description:
-    "19, CS undergrad, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26, building things, contributing to open source.",
+    "19, CS undergrad in Bengaluru, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26, building things, contributing to open source.",
   openGraph: {
-    title: "akshat",
+    title: "akshat patil",
     description:
-      "19, CS undergrad, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26.",
+      "19, CS undergrad in Bengaluru, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26.",
     url: "https://akshatpatil.vercel.app",
-    siteName: "akshat",
+    siteName: "akshat patil",
     images: [
       {
         url: "/akshat.jpg",
@@ -103,9 +40,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "akshat",
+    title: "akshat patil",
     description:
-      "19, CS undergrad, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26.",
+      "19, CS undergrad in Bengaluru, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26.",
     images: ["/akshat.jpg"],
   },
 };
@@ -116,23 +53,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="light" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
-      <body
-        className={`${lora.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
-      >
-        <main className="relative z-10 max-w-2xl mx-auto min-h-screen px-5 sm:px-6 pt-14 pb-28 md:pt-20 md:pb-32">
-          {children}
-        </main>
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden md:block">
-          <FloatingDock items={items} />
-        </div>
-        <div className="fixed bottom-6 right-5 z-50 md:hidden">
-          <FloatingDock items={items} />
-        </div>
-        <CommandPalette />
+    <html lang="en">
+      <body className={`${quicksand.variable} ${archivo.variable}`}>
+        {children}
       </body>
     </html>
   );

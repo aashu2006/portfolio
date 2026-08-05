@@ -1,249 +1,331 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------
-   Design tokens
-   Light = warm paper / ink. Dark = warm ink / bone.
-   Theme is set on <html data-theme> by the inline script in layout.
+   Theme
+   Plain-web look: white page, grey ink, one narrow column.
+   Colour is spent only on headings, chips and links.
    --------------------------------------------------------------- */
-:root,
-[data-theme="light"] {
-  --background: #f7f3ea;        /* warm paper */
-  --surface: rgba(247, 243, 234, 0.86); /* translucent dock / overlays */
-  --surface-raised: #fdfaf3;    /* opaque panels that sit above the page */
-  --foreground: #1c1610;        /* ink black */
-  --accent: #b8341a;            /* ember red */
-  --muted-text: #6b5d4f;        /* secondary text */
-  --faint-text: #8b7c6b;        /* micro labels, dates */
-  --hairline: rgba(28, 22, 16, 0.14);
-  --hairline-strong: rgba(28, 22, 16, 0.3);
-  --hover-surface: rgba(28, 22, 16, 0.05);
-  --scrim: rgba(28, 22, 16, 0.28);
-  --shadow-float: 0 6px 28px rgba(28, 22, 16, 0.1);
-  --sprite-shadow: drop-shadow(2px 4px 6px rgba(28, 22, 16, 0.12));
-  --noise-opacity: 0.045;
-  --ink-alpha: 0.38;            /* hero particle opacity, read from JS */
+:root {
+  --page: #ffffff;
+  --ink: #555555;
+  --ink-strong: #000000;
+  --teal: #5b9a8f;   /* h1 */
+  --mauve: #876e87;  /* h3, chips */
+  --chip: #f6f4f6;
+  --line: #dddadd;
   color-scheme: light;
-}
-
-/* Dark is NOT a mirror of light. The previous version copied light mode's
-   chroma budget (~0.01) onto a surface at L≈0.18, where that little chroma is
-   invisible, so the "warm paper" identity vanished and it read as flat grey.
-   Chroma is not lightness-symmetric: it is spent here where luminance can
-   actually carry it (text, accent) and withheld from the near-black void. */
-[data-theme="dark"] {
-  --background: #100e0c;        /* deeper, near-neutral void */
-  --surface: rgba(27, 23, 20, 0.88);
-  --surface-raised: #1b1714;    /* elevation comes from value, not shadow */
-  --foreground: #eae0cc;        /* warm cream: ~2x the chroma of the old bone */
-  --accent: #e05a38;            /* richer ember, closer to the light-mode red */
-  --muted-text: #ad9a7e;
-  --faint-text: #9b8a71;        /* lifted: 11px micro-labels were ~4.6:1 */
-  --hairline: rgba(234, 224, 204, 0.16);
-  --hairline-strong: rgba(234, 224, 204, 0.32);
-  --hover-surface: rgba(234, 224, 204, 0.07);
-  --scrim: rgba(12, 9, 7, 0.66); /* warm, matching everything else */
-  --shadow-float: 0 6px 28px rgba(0, 0, 0, 0.6);
-  --sprite-shadow: drop-shadow(2px 6px 14px rgba(0, 0, 0, 0.55));
-  /* Grey grain composited over near-black LIGHTENS and neutralises it, which
-     was the largest desaturating force on the largest surface. Dialled back. */
-  --noise-opacity: 0.03;
-  --ink-alpha: 0.34;
-  color-scheme: dark;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-surface-raised: var(--surface-raised);
-  --color-foreground: var(--foreground);
-  --color-accent: var(--accent);
-  --color-muted-text: var(--muted-text);
-  --color-faint-text: var(--faint-text);
-  --color-hairline: var(--hairline);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
-    sans-serif;
-  --font-serif: var(--font-lora), ui-serif, Georgia, "Times New Roman", serif;
 }
 
 /* ---------------------------------------------------------------
    Base
    --------------------------------------------------------------- */
 html {
-  background-color: var(--background);
-  /* The hero ink field is full-bleed inside a centred column. `clip` contains
-     it without the sticky-positioning side effects of `hidden`. */
-  overflow-x: clip;
+  background: var(--page);
 }
 
 body {
-  background-color: var(--background);
-  overflow-x: clip;
-  color: var(--foreground);
-  font-family: var(--font-sans);
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-quicksand), "Quicksand", ui-sans-serif, system-ui,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  transition: background-color 0.35s ease, color 0.35s ease;
 }
 
-/* Paper grain: sits above the flat background, below all content */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: var(--noise-opacity);
+* {
+  box-sizing: border-box;
 }
 
-/* Headings carry the serif; body copy stays sans for small-size clarity */
+/* Tailwind's preflight strips the default document styles, so the plain-HTML
+   rhythm this design leans on has to be written back out explicitly. */
+p {
+  margin-bottom: 16px;
+}
+
+body p,
+li {
+  font-size: 16px;
+  line-height: 19px;
+}
+
+strong {
+  color: var(--ink-strong);
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
+a {
+  font-weight: bold;
+  color: #0000ee;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #551a8b;
+}
+
+a:hover {
+  color: var(--mauve);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+ul {
+  list-style-type: circle;
+  padding-left: 22px;
+  margin-bottom: 16px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 40px 0;
+}
+
+/* ---------------------------------------------------------------
+   Headings
+   --------------------------------------------------------------- */
 h1,
 h2,
-h3,
-h4,
-blockquote {
-  font-family: var(--font-serif);
+h3 {
+  font-family: var(--font-archivo), "Archivo", Helvetica, Arial, sans-serif;
+  clear: both;
 }
 
-::selection {
-  background: var(--accent);
-  color: var(--background);
+/* White letters held together by a hairline stroke. The colour underneath is
+   the teal, which shows through anti-aliasing and on ::selection. */
+h1 {
+  font-size: 44px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-top: 60px;
+  margin-bottom: 16px;
+  color: var(--teal);
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #000;
+  -webkit-text-fill-color: #fff;
 }
 
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+/* The masthead is the first thing on the page: no 60px lead-in above it. */
+h1.masthead {
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 26px;
+  line-height: 1.2;
+  font-weight: 700;
+  margin-top: 44px;
+  margin-bottom: 14px;
+}
+
+h3 {
+  font-size: 19px;
+  line-height: 1.25;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--mauve);
+}
+
+h3 a {
+  color: var(--mauve);
+  text-decoration: none;
+}
+
+h3 a:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------
+   Blurb: floated image + caption, text wraps around it
+   --------------------------------------------------------------- */
+.blurb {
+  max-width: 100%;
+  padding: 10px;
+  float: left;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  height: auto;
+}
+
+.blurb img {
+  display: block;
+  border-radius: 4px;
+}
+
+.blurb p {
+  font-size: 12px;
+  line-height: 15px;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------------
+   Chips
+   --------------------------------------------------------------- */
+.a,
+.b,
+.c {
+  display: inline-block;
+  background-color: var(--chip);
+  color: var(--mauve);
+  font-size: 13px;
+  line-height: 1;
+  padding: 5px 8px;
+  margin: 0 4px 6px 0;
   border-radius: 3px;
 }
 
+.a:hover,
+.b:hover,
+.c:hover {
+  background-color: var(--chip);
+  color: var(--ink-strong);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+/* Toolkit rows: label on the left, chips on the right */
+.kit-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin-bottom: 10px;
+}
+
+.kit-label {
+  font-family: var(--font-archivo), "Archivo", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  color: var(--mauve);
+  font-size: 14px;
+  min-width: 90px;
+}
+
+/* Dates / small meta text sitting under an entry */
+.meta {
+  font-size: 12px;
+  line-height: 15px;
+  color: var(--mauve);
+  margin-bottom: 8px;
+}
+
+.updated {
+  font-size: 12px;
+  line-height: 15px;
+  margin-top: 48px;
+  color: var(--mauve);
+}
+
 /* ---------------------------------------------------------------
-   Editorial primitives
+   Form
    --------------------------------------------------------------- */
-
-/* Small uppercase eyebrow above a section */
-.label-micro {
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--faint-text);
+label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: var(--ink-strong);
 }
 
-.editorial-divider {
-  border-bottom: 1px solid var(--hairline);
+input,
+textarea {
+  width: 100%;
+  padding: 8px;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--page);
+  border-radius: 5px;
+  border: 1px solid var(--ink);
+  margin-bottom: 14px;
 }
 
-/* Inline tag: plain text, accent rule on hover */
-.editorial-tag {
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-weight: 450;
-  color: var(--muted-text);
-  padding-bottom: 0.125rem;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s ease, color 0.2s ease;
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+
+button {
+  font-family: var(--font-archivo), "Archivo", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 8px 18px;
+  background: var(--chip);
+  color: var(--mauve);
+  border: 1px solid var(--ink);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  color: var(--ink-strong);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+button[disabled] {
+  opacity: 0.6;
   cursor: default;
 }
 
-.editorial-tag:hover {
-  border-bottom-color: var(--accent);
-  color: var(--foreground);
-}
-
-/* Quiet text link: underline thickens toward the accent on hover */
-.link-quiet {
-  color: var(--muted-text);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  text-decoration-color: var(--hairline-strong);
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
-}
-
-.link-quiet:hover {
-  color: var(--foreground);
-  text-decoration-color: var(--accent);
-}
-
-/* Interactive list row: an accent rule grows in the margin on hover, instead
-   of the row lighting up as a block. Keeps the hairline grid intact. */
-.row-marker {
-  position: relative;
-}
-
-.row-marker::before {
-  content: "";
-  position: absolute;
-  left: -0.875rem;
-  top: 50%;
-  width: 2px;
-  height: 0;
-  transform: translateY(-50%);
-  background: var(--accent);
-  transition: height 0.25s ease;
-}
-
-.row-marker:hover::before {
-  height: 58%;
-}
-
-/* "all work →" style affordance at section headers */
-.section-link {
-  font-size: 0.8125rem;
-  color: var(--muted-text);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: color 0.2s ease;
-}
-
-.section-link:hover {
-  color: var(--accent);
-}
-
-.section-link svg {
-  transition: transform 0.2s ease;
-}
-
-.section-link:hover svg {
-  transform: translate(2px, -2px);
-}
-
-/* Theme toggle icon swap: driven by CSS so there is no post-hydration flash */
-[data-theme="dark"] .theme-icon-to-dark,
-[data-theme="light"] .theme-icon-to-light {
+.form-status:empty {
   display: none;
 }
 
+.form-status {
+  margin-top: 12px;
+  margin-bottom: 0;
+  color: #b0413e;
+}
+
+::selection {
+  background: var(--chip);
+  color: var(--ink-strong);
+}
+
 /* ---------------------------------------------------------------
-   Motion
+   Small screens
    --------------------------------------------------------------- */
-@keyframes pulse-dot {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
+@media screen and (max-width: 800px) {
+  h1 {
+    font-size: 34px;
+    letter-spacing: 1px;
   }
-  50% {
-    opacity: 0.4;
-    transform: scale(1.15);
+
+  h2 {
+    font-size: 22px;
   }
-}
 
-.animate-pulse-dot {
-  animation: pulse-dot 2.5s ease-in-out infinite;
-}
+  .blurb {
+    float: none;
+    margin-right: 0;
+    padding-left: 0;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  .kit-label {
+    min-width: 100%;
   }
 }
