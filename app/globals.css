@@ -105,17 +105,18 @@ h3 {
   clear: both;
 }
 
-/* White letters held together by a hairline stroke. The colour underneath is
-   the teal, which shows through anti-aliasing and on ::selection. */
+/* White letters held together by a stroke rather than a fill. At a hairline
+   weight the glyphs read as a rendering glitch instead of a choice, so the
+   stroke carries real weight and the size is pushed up to give it room. */
 h1 {
-  font-size: 44px;
+  font-size: 52px;
   line-height: 1.1;
   font-weight: 700;
   letter-spacing: 2px;
   margin-top: 60px;
   margin-bottom: 16px;
   color: var(--teal);
-  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-width: 1.5px;
   -webkit-text-stroke-color: #000;
   -webkit-text-fill-color: #fff;
 }
@@ -125,12 +126,16 @@ h1.masthead {
   margin-top: 0;
 }
 
+/* Teal, so the colour hierarchy runs downhill: outlined h1, teal h2, mauve h3.
+   Left at the inherited body grey, the mauve h3s nested under it read as the
+   louder level and the nesting inverts. */
 h2 {
   font-size: 26px;
   line-height: 1.2;
   font-weight: 700;
   margin-top: 44px;
   margin-bottom: 14px;
+  color: var(--teal);
 }
 
 h3 {
@@ -221,11 +226,12 @@ h3 a:hover {
   min-width: 90px;
 }
 
-/* Dates / small meta text sitting under an entry */
+/* Dates / small meta text sitting under an entry. Deliberately not mauve: it
+   sits directly under a mauve h3 and the two muddied into one block. */
 .meta {
   font-size: 12px;
   line-height: 15px;
-  color: var(--mauve);
+  color: #8a8a8a;
   margin-bottom: 8px;
 }
 
@@ -311,8 +317,9 @@ button[disabled] {
    --------------------------------------------------------------- */
 @media screen and (max-width: 800px) {
   h1 {
-    font-size: 34px;
+    font-size: 38px;
     letter-spacing: 1px;
+    -webkit-text-stroke-width: 1.2px;
   }
 
   h2 {
