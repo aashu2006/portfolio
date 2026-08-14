@@ -114,16 +114,19 @@ h1 {
   font-weight: 700;
   letter-spacing: 2px;
   margin-top: 60px;
-  margin-bottom: 16px;
+  margin-bottom: 28px;
   color: var(--accent);
   -webkit-text-stroke-width: 1.5px;
   -webkit-text-stroke-color: #000;
   -webkit-text-fill-color: #fff;
 }
 
-/* The masthead is the first thing on the page: no 60px lead-in above it. */
+/* Less lead-in than a mid-page h1, but not zero: pinned to the 20px body
+   padding the name reads as jammed against the browser chrome. Set in em so it
+   tracks the type size and needs no separate mobile value: 26px here, 19px at
+   the smaller mobile size, plus the 20px body padding in both cases. */
 h1.masthead {
-  margin-top: 0;
+  margin-top: 0.5em;
 }
 
 /* Carries the accent so the hierarchy runs downhill: outlined h1, ember h2,
@@ -321,6 +324,7 @@ button[disabled] {
   h1 {
     font-size: 38px;
     letter-spacing: 1px;
+    margin-bottom: 20px;
     -webkit-text-stroke-width: 1.2px;
   }
 

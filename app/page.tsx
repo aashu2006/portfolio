@@ -6,6 +6,17 @@ import { ContactForm } from "@/components/contact-form";
 
 const toolkit = [
   { label: "Languages", items: ["JavaScript", "Python", "C++"] },
+  {
+    label: "AI / ML",
+    items: [
+      "NumPy",
+      "Pandas",
+      "Matplotlib",
+      "Seaborn",
+      "scikit-learn",
+      "TensorFlow",
+    ],
+  },
   { label: "Web", items: ["React", "Next.js", "Node.js", "Express", "p5.js"] },
   { label: "Graphics", items: ["WebGL", "WebGPU", "GLSL / WGSL"] },
   { label: "Systems", items: ["Kubernetes", "Docker", "Linux", "CI/CD"] },
@@ -14,7 +25,8 @@ const toolkit = [
 
 const currently = [
   "building the WebGPU instancing API for p5.strands as a Processing Foundation micrograntee",
-  "learning LLMs and the engineering around them",
+  "reviewing PRs as a p5.js steward",
+  "learning LLMs and the engineering around them, alongside ML foundations (supervised learning, neural nets from scratch in NumPy)",
 ];
 
 export default function HomePage() {
@@ -23,8 +35,9 @@ export default function HomePage() {
       <h1 className="masthead">akshat patil</h1>
 
       <p>
-        <strong>Hello!</strong> I&apos;m a Bengaluru-based CS undergrad,
-        open-source contributor, and graphics tinkerer.
+        <strong>Hello! </strong> I&apos;m a Bengaluru-based CS undergrad,
+        open-source contributor, and graphics tinkerer currently working my way
+        into machine learning.
         <br />
         You can find me at{" "}
         <a href="https://github.com/aashu2006">github.com/aashu2006</a>;{" "}
@@ -58,9 +71,10 @@ export default function HomePage() {
         learning <strong>LLMs</strong> with the aim of working as an AI
         engineer. Since 2025 he has worked on{" "}
         <a href="https://github.com/processing/p5.js">p5.js</a> at the{" "}
-        <strong>Processing Foundation</strong>, where he is a 2026 micrograntee
-        building the WebGPU instancing API for p5.strands. He also contributes
-        to <a href="https://github.com/kubestellar/kubestellar">KubeStellar</a>{" "}
+        <strong>Processing Foundation</strong>, where he is now a steward on the
+        project and a 2026 micrograntee building the WebGPU instancing API for
+        p5.strands. He also contributes to{" "}
+        <a href="https://github.com/kubestellar/kubestellar">KubeStellar</a>{" "}
         under the CNCF and to the Linux Foundation Decentralized Trust{" "}
         <a href="https://github.com/hiero-ledger">Hiero</a> project.
       </p>

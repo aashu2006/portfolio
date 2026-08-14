@@ -12,20 +12,20 @@ export const ossWork: OSSWork[] = [
   {
     org: "Processing Foundation",
     project: "p5.js",
-    role: "Micrograntee 2026 - WebGPU Instancing",
+    role: "Steward, Micrograntee 2026 - WebGPU Instancing",
     period: "since 2025",
     description:
-      "Designed and implemented the instances(n).model() API and instanceIndex system for WebGPU instanced rendering. 30+ merged PRs.",
+      "Designed and implemented the instances(n).model() API and instanceIndex system for WebGPU instanced rendering. 30+ merged PRs across core, website, and the web editor. Now reviews and merges contributions as a project steward.",
     link: "https://github.com/processing/p5.js",
     tags: ["WebGL", "WebGPU", "JavaScript", "Open Source"],
   },
   {
     org: "CNCF",
     project: "KubeStellar",
-    role: "Contributor - Ranked #3 on contributor leaderboard",
+    role: "Contributor - Admiral badge, ranked #3 on contributor leaderboard",
     period: "2026",
     description:
-      "500+ verified bug reports, documentation, and infrastructure contributions to the CNCF cloud-native project.",
+      "500+ verified bug reports, plus documentation and infrastructure contributions to the CNCF cloud-native project.",
     link: "https://github.com/kubestellar/kubestellar",
     tags: ["Distributed Systems", "Kubernetes", "Go"],
   },
@@ -35,8 +35,8 @@ export const ossWork: OSSWork[] = [
     role: "Contributor",
     period: "2026",
     description:
-      "Contributed to the Linux Foundation Decentralized Trust Hiero project - SDK tooling and documentation.",
+      "15+ merged PRs across hiero-sdk-cpp and hiero-website for the Linux Foundation Decentralized Trust project. SDK internals and site work.",
     link: "https://github.com/hiero-ledger",
-    tags: ["Blockchain", "SDK", "TypeScript"],
+    tags: ["Distributed Ledger", "SDK", "C++"],
   },
 ];
