@@ -56,8 +56,9 @@ A few rules in `globals.css` are load-bearing and easy to break by accident:
 - **`h1`** is white fill over a black stroke, so the letters are outlines. The
   fill has to match the page background or the effect collapses. This is the
   reason there is no dark mode.
-- **Colour runs downhill** through the heading levels: outlined `h1`, teal
-  `h2`, mauve `h3`. Recolouring one level alone inverts the hierarchy.
+- **Colour runs downhill** through the heading levels: outlined `h1`, ember
+  `h2` (`--accent`, 5.9:1 on white), mauve `h3` (4.55:1). Recolouring one level
+  alone inverts the hierarchy, so keep `h2` above `h3` in contrast.
 - **Body copy is 16px on a 900px measure**, which is a long line. The leading
   is set wider than the headings to compensate.
 - **`.blurb`** floats an image left and lets text wrap around it. Headings set

@@ -9,7 +9,7 @@
   --page: #ffffff;
   --ink: #555555;
   --ink-strong: #000000;
-  --teal: #5b9a8f;   /* h1 */
+  --accent: #b8341a; /* h2, focus rings */
   --mauve: #876e87;  /* h3, chips */
   --chip: #f6f4f6;
   --line: #dddadd;
@@ -75,7 +75,7 @@ a:hover {
 }
 
 a:focus-visible {
-  outline: 2px solid var(--teal);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -115,7 +115,7 @@ h1 {
   letter-spacing: 2px;
   margin-top: 60px;
   margin-bottom: 16px;
-  color: var(--teal);
+  color: var(--accent);
   -webkit-text-stroke-width: 1.5px;
   -webkit-text-stroke-color: #000;
   -webkit-text-fill-color: #fff;
@@ -126,16 +126,16 @@ h1.masthead {
   margin-top: 0;
 }
 
-/* Teal, so the colour hierarchy runs downhill: outlined h1, teal h2, mauve h3.
-   Left at the inherited body grey, the mauve h3s nested under it read as the
-   louder level and the nesting inverts. */
+/* Carries the accent so the hierarchy runs downhill: outlined h1, ember h2,
+   mauve h3. This level has to out-contrast the mauve below it (4.55:1) or the
+   nesting inverts, which is what the old teal at 3.25:1 was quietly doing. */
 h2 {
   font-size: 26px;
   line-height: 1.2;
   font-weight: 700;
   margin-top: 44px;
   margin-bottom: 14px;
-  color: var(--teal);
+  color: var(--accent);
 }
 
 h3 {
@@ -267,7 +267,7 @@ textarea {
 
 input:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid var(--teal);
+  outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
 
@@ -288,7 +288,7 @@ button:hover {
 }
 
 button:focus-visible {
-  outline: 2px solid var(--teal);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -301,10 +301,12 @@ button[disabled] {
   display: none;
 }
 
+/* Was its own near-identical red, which collided with the ember accent once
+   the headings turned red. The wording carries the error, not the colour. */
 .form-status {
   margin-top: 12px;
   margin-bottom: 0;
-  color: #b0413e;
+  color: var(--accent);
 }
 
 ::selection {
