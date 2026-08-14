@@ -3,6 +3,7 @@ import { ossWork } from "@/lib/oss-data";
 import { projects } from "@/lib/projects-data";
 import { posts } from "@/lib/blog-data";
 import { ContactForm } from "@/components/contact-form";
+import { InstancingDemo } from "@/components/instancing-demo";
 
 const toolkit = [
   { label: "Languages", items: ["JavaScript", "Python", "C++"] },
@@ -101,7 +102,7 @@ export default function HomePage() {
         ))}
       </ul>
 
-      <h2>Open Source</h2>
+      <h2>Work</h2>
 
       {ossWork.map((work) => (
         <div key={work.project}>
@@ -114,6 +115,9 @@ export default function HomePage() {
             {work.role} &middot; {work.period}
           </p>
           <p>{work.description}</p>
+          {/* Only the p5.js entry: the demo is evidence for that specific
+              claim, not decoration for the section. */}
+          {work.project === "p5.js" && <InstancingDemo />}
           <div className="chips">
             {work.tags.map((tag) => (
               <span className="a" key={tag}>

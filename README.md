@@ -26,7 +26,8 @@ npm run lint    # eslint
 | `app/page.tsx` | The entire page. Every section is here. |
 | `app/globals.css` | The whole theme. Plain CSS, no utility classes. |
 | `app/layout.tsx` | Fonts and metadata. |
-| `components/contact-form.tsx` | The only client component. |
+| `components/contact-form.tsx` | Client component: the Get in Touch form. |
+| `components/instancing-demo.tsx` | Client component: the three.js forest. |
 | `lib/*-data.ts` | Content for the open source, projects, and writing sections. |
 
 To change what the page says, edit the `lib` data files. To change how it
@@ -48,6 +49,36 @@ It needs an access key:
 Without the key the section renders a plain email address instead of a form,
 so a visitor never types out a message that has nowhere to go. The key is
 public by design; it only authorises delivery to the address it was issued to.
+
+## Instancing demo
+
+The three.js scene in the Work section draws 500 trees, each a trunk plus three
+stacked foliage cones, as two `InstancedMesh` batches over a ground disc. That
+is roughly 2,000 objects in 3 draw calls. It illustrates the p5.strands
+instancing work described right above it, so it belongs to that entry rather
+than to the page.
+
+The fog colour (`HAZE` in the component) and the `.demo-stage` background in
+`globals.css` must stay equal. The canvas is transparent and the fog fades to
+that value, which is what dissolves the far trees and the rim of the ground
+disc into the page. Change one and the scene ends at a visible hard edge.
+
+It is deliberately expensive to reach and cheap to ignore:
+
+- `three` is behind a dynamic `import()`, so it lands in its own chunk and adds
+  nothing to first load. Verify with `grep -l WebGLShadowMap .next/static/chunks/*.js`
+  and check that chunk is absent from the served HTML.
+- Nothing loads until an `IntersectionObserver` says the section is within
+  200px of the viewport.
+- The render loop pauses when the tab is hidden or the section scrolls away.
+- `prefers-reduced-motion: reduce` renders a single static frame instead.
+- If a WebGL context cannot be created, the stage shows a text fallback.
+- The stage reserves its height from first paint, so the canvas arriving
+  causes no layout shift.
+
+The draw-call figure in the caption is read from `renderer.info.render.calls`
+rather than hardcoded, so it stays honest if the scene ever gains a second
+material.
 
 ## Theme notes
 

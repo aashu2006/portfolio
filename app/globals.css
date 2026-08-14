@@ -318,6 +318,68 @@ button[disabled] {
 }
 
 /* ---------------------------------------------------------------
+   Instancing demo
+   Sits inside the Work entry it illustrates. The stage keeps
+   a reserved height from first paint so nothing reflows when the
+   canvas arrives.
+   --------------------------------------------------------------- */
+.demo {
+  margin: 0 0 16px;
+}
+
+.demo-stage {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  /* Must stay in sync with HAZE in instancing-demo.tsx. The canvas is
+     transparent and the scene fog fades to this exact value, which is what
+     lets the far trees dissolve into the stage instead of ending at an edge. */
+  background: #f1eee9;
+  overflow: hidden;
+}
+
+.demo-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.demo-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--mauve);
+}
+
+.demo-caption {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 16px;
+  color: #8a8a8a;
+}
+
+/* The live figures are the point; the prose around them is support. */
+.demo-caption > span:first-child {
+  color: var(--ink-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-note a {
+  font-weight: normal;
+}
+
+@media screen and (max-width: 800px) {
+  .demo-stage {
+    height: 220px;
+  }
+}
+
+/* ---------------------------------------------------------------
    Small screens
    --------------------------------------------------------------- */
 @media screen and (max-width: 800px) {
