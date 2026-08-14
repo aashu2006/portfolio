@@ -35,7 +35,8 @@ export default function HomePage() {
         </a>
         ;
         <br />
-        or using the contact form below.
+        my <a href="/resume.pdf">resume as a PDF</a>; or using the contact form
+        below.
       </p>
 
       <h2>Bio</h2>
@@ -129,18 +130,24 @@ export default function HomePage() {
 
       <h2>Writing</h2>
 
-      <ul>
-        {posts.map((post) => (
-          <li key={post.title}>
-            {post.slug ? (
-              <a href={`/blog/${post.slug}`}>{post.title}</a>
-            ) : (
-              <strong>{post.title}</strong>
-            )}{" "}
-            &middot; {post.date}
-          </li>
-        ))}
-      </ul>
+      {posts.map((post) => (
+        <div key={post.title}>
+          <h3>
+            <a href={post.url}>{post.title}</a>
+          </h3>
+          <p className="meta">
+            {post.publication} &middot; {post.date}
+          </p>
+          <p>{post.description}</p>
+          <div className="chips">
+            {post.tags.map((tag) => (
+              <span className="a" key={tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
 
       <h2>Toolkit</h2>
 
