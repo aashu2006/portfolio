@@ -184,6 +184,24 @@ h3 a:hover {
 }
 
 /* ---------------------------------------------------------------
+   Project thumbnails
+   Same float-and-wrap idea as .blurb, but these come from screenshots
+   rather than one known source, so the box is fixed and the image is
+   cropped to fill it. Without object-fit a stray ratio squashes the UI
+   in the shot. Nothing needs to clear these: h2 and h3 both set
+   clear: both, so an entry's float can never ride into the next one.
+   --------------------------------------------------------------- */
+.shot {
+  float: left;
+  width: 240px;
+  height: 135px;
+  object-fit: cover;
+  margin: 0 16px 12px 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+/* ---------------------------------------------------------------
    Chips
    --------------------------------------------------------------- */
 .a,
@@ -398,6 +416,16 @@ button[disabled] {
     float: none;
     margin-right: 0;
     padding-left: 0;
+  }
+
+  /* A 240px float on a phone leaves the description about ten characters
+     wide, so the shot stops floating and spans the column instead. */
+  .shot {
+    float: none;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    margin-right: 0;
   }
 
   .kit-label {

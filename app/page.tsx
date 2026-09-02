@@ -135,6 +135,18 @@ export default function HomePage() {
           <h3>
             <a href={project.githubLink}>{project.title}</a>
           </h3>
+          {/* 16:9 at 2x the 240px box it renders in. The sources are far
+              larger than this; these numbers only set the ratio, and the
+              optimizer serves the size the box actually needs. */}
+          {project.image && (
+            <Image
+              className="shot"
+              src={project.image}
+              width={480}
+              height={270}
+              alt={`Screenshot of ${project.title}`}
+            />
+          )}
           <p>{project.description}</p>
           <div className="chips">
             {project.techStack.map((tech) => (

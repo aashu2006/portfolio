@@ -93,7 +93,42 @@ A few rules in `globals.css` are load-bearing and easy to break by accident:
 - **Body copy is 16px on a 900px measure**, which is a long line. The leading
   is set wider than the headings to compensate.
 - **`.blurb`** floats an image left and lets text wrap around it. Headings set
-  `clear: both` so the next section never rides up alongside one.
+  `clear: both` so the next section never rides up alongside one. `.shot`, the
+  project thumbnail, works the same way and relies on the same rule.
+
+## Project thumbnails
+
+Each entry in `lib/projects-data.ts` may set `image` to a path under `public/`.
+The field is optional; an entry without one renders as a plain text block.
+
+Screenshots live in `public/projects/`. Shoot them **16:9** and at least 480px
+wide, which is 2x the 240x135 box they render in. `.shot` sets
+`object-fit: cover`, so a different ratio is cropped rather than squashed, but
+anything far from 16:9 loses real content to the crop.
+
+Give the file its true extension. `next/image` sniffs the format and copes
+either way, but a JPEG named `.png` is served with the wrong `Content-Type`
+when requested directly from `public/`.
+
+The sources are checked in at full screenshot resolution, far larger than the
+box needs. That costs repo weight, not page weight: the optimizer downscales
+to the 480px the thumbnail actually uses.
+
+**Replacing a screenshot in place needs a cache clear.** The image optimizer
+keys on the request URL plus width and quality, holds the result for four
+hours, and never checks whether the source file changed underneath. Overwrite
+`docrag.png` and `next dev` keeps serving the old one from
+`.next/dev/cache/images`, which looks exactly like the new file not being
+picked up. Run:
+
+```bash
+rm -rf .next/dev/cache/images   # npm run dev
+rm -rf .next/cache/images       # npm run start
+```
+
+No server restart is needed, but the browser wants a hard refresh. Renaming
+the file avoids this entirely, since the URL changes. Vercel is unaffected:
+every deploy starts cold.
 
 ## Deploying
 
