@@ -20,6 +20,16 @@ export const ossWork: OSSWork[] = [
     tags: ["WebGL", "WebGPU", "JavaScript", "Open Source"],
   },
   {
+    org: "RISC-V International",
+    project: "riscv-unified-db",
+    role: "Contributor",
+    period: "2026",
+    description:
+      "Seven PRs fixing correctness bugs in the machine-readable RISC-V specification: sign-extension of narrow results in the Zaamo, Zabha and Zalrsc atomics, a non-terminating IDL helper, ctzw on a zero low word, and the Sv48 canonical-address boundary in stvec/vstvec.",
+    link: "https://github.com/riscv/riscv-unified-db",
+    tags: ["RISC-V", "ISA Semantics", "IDL"],
+  },
+  {
     org: "CNCF",
     project: "KubeStellar",
     role: "Contributor - Admiral badge, ranked #3 on contributor leaderboard",

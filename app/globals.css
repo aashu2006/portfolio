@@ -2,18 +2,87 @@
 
 /* ---------------------------------------------------------------
    Theme
-   Plain-web look: white page, grey ink, one narrow column.
-   Colour is spent only on headings, chips and links.
+   Plain-web look: one narrow column, grey ink, no chrome.
+   Light spends colour on headings, chips and links; dark spends
+   almost none. See the dark block below for why they differ.
    --------------------------------------------------------------- */
 :root {
   --page: #ffffff;
   --ink: #555555;
+  --ink-soft: #8a8a8a; /* dates, captions */
   --ink-strong: #000000;
-  --accent: #b8341a; /* h2, focus rings */
-  --mauve: #876e87;  /* h3, chips */
+  --accent: #b8341a; /* focus rings, form errors */
+  --mauve: #876e87;  /* chips, buttons, hover */
+  /* Heading colours are their own tokens so dark mode can quiet the headings
+     without dragging chips and buttons monochrome along with them. */
+  --head-2: #b8341a;
+  --head-3: #876e87;
   --chip: #f6f4f6;
   --line: #dddadd;
+  --link: #0000ee;
+  --visited: #551a8b;
+  --live: #187633;
+  /* Must equal the fog colour the three.js demo reads back out of this
+     property. See the Instancing demo section below. */
+  --stage: #f1eee9;
   color-scheme: light;
+}
+
+/* Dark palette. Contrast on --page: ink 8.1:1, h2 16.7:1, h3 9.3:1,
+   link 15.1:1, meta 5.7:1, chip text 5.9:1. Colour still runs downhill with
+   h2 above h3, exactly as it does in light. Recolour one level on its own and
+   the heading hierarchy inverts, the same trap documented for light.
+
+   Dark deliberately spends almost no colour: headings and links go near-white
+   and the ember survives only on the microgrant badge, a focus ring and an
+   error message. Keeping it that scarce is what lets the badge read as a
+   credential instead of as decoration. That is
+   the one thing taken from samworks.vercel.app, whose whole character is the
+   restraint. Light keeps the ember and mauve, which is the xnze.ro identity
+   this site is built on. The two references disagree, and each theme follows
+   the one that suits it.
+
+   Written out twice because CSS has no way to share a declaration block
+   between two selectors. The media query covers a visitor who has never
+   touched the toggle, including with JavaScript off; the attribute rule is
+   what lets an explicit choice override the OS in either direction. Keep the
+   two blocks identical. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #101010;
+    --ink: #aca8ac;
+    --ink-soft: #8f8b8f;
+    --ink-strong: #ffffff;
+    --accent: #e08a68;
+    --mauve: #ad8ead;
+    --head-2: #f2eff2;
+    --head-3: #b9b3b9;
+    --chip: #1e1c1e;
+    --line: #333033;
+    --link: #e8e4e8;
+    --visited: #b9b3b9;
+    --live: #4ac26b;
+    --stage: #15181a;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --page: #101010;
+  --ink: #aca8ac;
+  --ink-soft: #8f8b8f;
+  --ink-strong: #ffffff;
+  --accent: #e08a68;
+  --mauve: #ad8ead;
+  --head-2: #f2eff2;
+  --head-3: #b9b3b9;
+  --chip: #1e1c1e;
+  --line: #333033;
+  --link: #e8e4e8;
+  --visited: #b9b3b9;
+  --live: #4ac26b;
+  --stage: #15181a;
+  color-scheme: dark;
 }
 
 /* ---------------------------------------------------------------
@@ -62,12 +131,12 @@ em {
 
 a {
   font-weight: bold;
-  color: #0000ee;
+  color: var(--link);
   text-decoration: underline;
 }
 
 a:visited {
-  color: #551a8b;
+  color: var(--visited);
 }
 
 a:hover {
@@ -98,60 +167,462 @@ hr {
 /* ---------------------------------------------------------------
    Headings
    --------------------------------------------------------------- */
+/* One serif across every heading level, the way the samworks reference does
+   it. Archivo stays on the toggle, buttons and toolkit labels, which are UI
+   rather than headings.
+
+   The family ships weight 400 and nothing else, so no heading may ask for
+   700: the browser answers a missing weight by smearing the glyphs into a
+   faux bold, which on a serif with real hairlines looks like a rendering
+   fault. Size carries the hierarchy here instead of weight. */
 h1,
 h2,
 h3 {
-  font-family: var(--font-archivo), "Archivo", Helvetica, Arial, sans-serif;
+  font-family: var(--font-instrument), "Instrument Serif", Georgia, serif;
+  font-weight: 400;
   clear: both;
 }
 
-/* White letters held together by a stroke rather than a fill. At a hairline
-   weight the glyphs read as a rendering glitch instead of a choice, so the
-   stroke carries real weight and the size is pushed up to give it room. */
+/* Letters held together by a stroke rather than a fill, so the name reads as
+   an outline. The stroke has to stay in proportion to the face: too thin and
+   the glyphs read as a rendering glitch, too thick and this serif's hairlines
+   disappear inside it. Changing the family means re-checking that width.
+
+   Fill and stroke are tokens, not fixed hex. That is the whole reason this
+   survives dark mode: the fill only has to equal the page, whatever the page
+   currently is, so the outline inverts to light-on-dark instead of breaking.
+   Hardcoding either one back to #fff or #000 undoes that. */
 h1 {
-  font-size: 52px;
-  line-height: 1.1;
-  font-weight: 700;
-  letter-spacing: 2px;
+  /* Instrument Serif sets smaller than a grotesque at the same value, and it
+     is a display face, so it takes the extra size without shouting. */
+  font-size: 62px;
+  line-height: 1.05;
+  /* A serif already carries its own rhythm through the serifs themselves.
+     The 2px this had for Anton reads as broken-apart at these letterforms. */
+  letter-spacing: 0.5px;
   margin-top: 60px;
   margin-bottom: 28px;
-  color: var(--accent);
-  -webkit-text-stroke-width: 1.5px;
-  -webkit-text-stroke-color: #000;
-  -webkit-text-fill-color: #fff;
+  color: var(--head-2);
+  /* Thinner than the 1.5px a condensed sans wanted: this face has hairlines,
+     and a heavy stroke swallows them until the letters lose their shape. */
+  -webkit-text-stroke-width: 1.1px;
+  -webkit-text-stroke-color: var(--ink-strong);
+  -webkit-text-fill-color: var(--page);
 }
 
 /* Less lead-in than a mid-page h1, but not zero: pinned to the 20px body
    padding the name reads as jammed against the browser chrome. Set in em so it
-   tracks the type size and needs no separate mobile value: 26px here, 19px at
-   the smaller mobile size, plus the 20px body padding in both cases. */
+   tracks the type size and needs no separate mobile value, plus the 20px body
+   padding in both cases. */
 h1.masthead {
   margin-top: 0.5em;
 }
 
-/* Carries the accent so the hierarchy runs downhill: outlined h1, ember h2,
-   mauve h3. This level has to out-contrast the mauve below it (4.55:1) or the
-   nesting inverts, which is what the old teal at 3.25:1 was quietly doing. */
-h2 {
-  font-size: 26px;
-  line-height: 1.2;
+/* ---------------------------------------------------------------
+   Social marks
+   Two bare logos under the masthead, in place of the three-line
+   list of raw URLs the intro used to carry. No borders and no
+   labels: at this size the marks are recognisable on their own,
+   and boxing them would compete with the serif name above.
+   --------------------------------------------------------------- */
+/* Marks and badge share one row. With only two logos the row was mostly
+   empty, and the microgrant is the thing worth putting in that space. */
+.intro-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin: 0 0 26px;
+}
+
+.socials {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Deliberately the loudest small thing on the page, in both themes. Dark
+   otherwise spends almost no colour, which is exactly what makes one ember
+   pill read as a credential rather than as decoration. Contrast on --page:
+   5.9:1 light, 7.3:1 dark. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  font-family: var(--font-archivo), "Archivo", Helvetica, Arial, sans-serif;
+  font-size: 12px;
   font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+}
+
+.badge::before {
+  content: "";
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.socials li {
+  margin: 0;
+}
+
+/* Undoes the global link rule, which would otherwise put an underline beneath
+   each glyph and paint it link-blue. */
+.socials a {
+  display: inline-flex;
+  color: var(--head-3);
+  text-decoration: none;
+  transition: color 0.18s, transform 0.18s;
+}
+
+.socials a:visited {
+  color: var(--head-3);
+}
+
+.socials a:hover {
+  color: var(--head-2);
+  transform: translateY(-2px);
+}
+
+.socials a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+.socials svg {
+  display: block;
+  width: 26px;
+  height: 26px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .socials a {
+    transition: none;
+  }
+
+  .socials a:hover {
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Section nav
+   Two shapes for one nav. On a wide screen the 900px column leaves
+   a deep margin, and a dot rail lives out there. Below that there is
+   no margin to use and it becomes a bar across the top. Exactly one
+   is displayed at a time, which also keeps the other out of the a11y
+   tree.
+
+   The rail is anchored by its RIGHT edge, not its left, and each row
+   is reversed so the dot sits on the outside. That is what keeps the
+   dots in one straight column beside the text while the labels, which
+   are all different widths, run away into the margin. Anchoring from
+   the left instead lets a long label such as "Get in Touch" reach
+   33px into the body copy at every viewport width.
+
+   1200px is the floor: the widest label plus its dot needs 115px of
+   margin to open into, which a 900px column only has past ~1130px.
+   --------------------------------------------------------------- */
+.rail,
+.topnav {
+  font-family: var(--font-archivo), "Archivo", Helvetica, Arial, sans-serif;
+}
+
+.rail ul,
+.topnav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rail {
+  display: none;
+  position: fixed;
+  top: 50%;
+  /* Half the column plus a 24px gutter. Pinned to the column rather than the
+     viewport edge, so the gutter holds at every width. */
+  right: calc(50% + 474px);
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.rail li {
+  margin: 0;
+}
+
+.rail a {
+  display: flex;
+  /* Dot on the outside, label growing inward-to-outward on reveal. */
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 0;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.rail-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-soft);
+  transition: background-color 0.18s, border-color 0.18s, transform 0.18s;
+}
+
+/* Always legible, never a hover reveal. Six anonymous dots and one label read
+   as decoration rather than as navigation, which is exactly how the first
+   version came across. */
+.rail-label {
+  white-space: nowrap;
+  transition: color 0.18s;
+}
+
+.rail a:hover .rail-dot,
+.rail a:focus-visible .rail-dot {
+  border-color: var(--head-2);
+  transform: scale(1.25);
+}
+
+.rail a.is-active {
+  color: var(--head-2);
+}
+
+.rail a.is-active .rail-dot {
+  background: var(--head-2);
+  border-color: var(--head-2);
+}
+
+.rail a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* Bleeds past the body's 20px padding so the backdrop spans the full
+     width rather than stopping short of the edges. */
+  margin: -20px -20px 0;
+  /* Right padding reserves the fixed toggle's corner, or the last link
+     scrolls underneath it. */
+  padding: 8px 56px 8px 20px;
+  background: var(--page);
+  border-bottom: 1px solid var(--line);
+}
+
+.topnav ul {
+  display: flex;
+  gap: 14px;
+  flex: 1;
+  overflow-x: auto;
+  /* The bar is narrow by definition; let the links scroll rather than wrap
+     it onto a second line. */
+  scrollbar-width: none;
+}
+
+.topnav ul::-webkit-scrollbar {
+  display: none;
+}
+
+.topnav li {
+  margin: 0;
+}
+
+.topnav a {
+  display: block;
+  padding: 3px 0;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+}
+
+.topnav a.is-active {
+  color: var(--head-2);
+  border-bottom-color: var(--head-2);
+}
+
+@media screen and (min-width: 1200px) {
+  /* Column layout with the rows right-aligned: the list shrinks to its widest
+     label, every row fills that width, and so every dot lands on the same x. */
+  .rail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .topnav {
+    display: none;
+  }
+}
+
+/* Anchors land under the sticky bar without this. Harmless on the rail
+   layout, where nothing overlaps the top of the page. */
+h2[id] {
+  scroll-margin-top: 56px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ---------------------------------------------------------------
+   Theme toggle
+   --------------------------------------------------------------- */
+.theme-toggle {
+  /* Fixed so it stays put while scrolling, but tracked to the column rather
+     than the window: on a wide screen a raw viewport corner strands it far out
+     in the margin, away from everything it belongs to. The max() keeps a 16px
+     inset once the viewport is too narrow for the column to set the position.
+     450px of half-column less the 20px body padding lands its right edge on
+     the same line as the text. */
+  position: fixed;
+  top: 20px;
+  right: max(16px, calc(50% - 430px));
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: var(--head-3);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s, transform 0.25s;
+}
+
+.theme-toggle:hover {
+  color: var(--head-2);
+  border-color: var(--head-2);
+  transform: rotate(-25deg);
+}
+
+.theme-toggle svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Disabled only for the one frame before the client knows the theme.
+   Dimming it for that frame would read as a flicker. */
+.theme-toggle[disabled] {
+  opacity: 1;
+  cursor: default;
+}
+
+/* ---------------------------------------------------------------
+   Theme blast
+   A ring races out from the toggle while the palette cross-fades
+   underneath it. Position and size come from the script, which is
+   the only thing that knows where the button is; everything here is
+   the appearance.
+   --------------------------------------------------------------- */
+.blast-ring {
+  position: fixed;
+  /* Centred on the point the script sets, and above everything including
+     the sticky bar and the toggle itself. */
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  z-index: 100;
+  border-radius: 50%;
+  /* A ring, not a disc: the middle stays clear so the page is never hidden
+     behind a growing blank circle. closest-side keeps the band's position
+     proportional as the element scales. */
+  background: radial-gradient(
+    circle closest-side,
+    transparent 0 62%,
+    color-mix(in srgb, var(--head-2) 22%, transparent) 74%,
+    var(--head-2) 88%,
+    transparent 100%
+  );
+}
+
+/* Applied for the length of the cross-fade only. A permanent transition on
+   every element would put a visible lag on ordinary hovers. The h1's fill and
+   stroke are listed because the masthead is drawn from those two properties
+   rather than from `color`, and without them it would snap while the rest of
+   the page faded. */
+:root.theming *,
+:root.theming *::before,
+:root.theming *::after {
+  transition: background-color 280ms ease, color 280ms ease,
+    border-color 280ms ease, -webkit-text-fill-color 280ms ease,
+    -webkit-text-stroke-color 280ms ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .rail-dot,
+  .rail-label,
+  .theme-toggle {
+    transition: none;
+  }
+
+  /* The script skips the blast entirely here; this covers the palette
+     cross-fade, which is applied by class rather than by script. */
+  :root.theming *,
+  :root.theming *::before,
+  :root.theming *::after {
+    transition: none !important;
+  }
+
+  .theme-toggle:hover {
+    transform: none;
+  }
+}
+
+/* Colour runs downhill through the levels: outlined h1, then h2, then h3.
+   This level has to out-contrast the one below it (light 5.93:1 over 4.55:1,
+   dark 16.7:1 over 9.3:1) or the nesting inverts, which is what the old teal
+   at 3.25:1 was quietly doing. --head-2 and --head-3 exist so that ordering
+   can be checked in one place per theme. */
+h2 {
+  /* Up from 26px. At weight 400 a serif reads lighter than Archivo's bold
+     did, so the level needs the size back to hold its place. */
+  font-size: 31px;
+  line-height: 1.15;
   margin-top: 44px;
   margin-bottom: 14px;
-  color: var(--accent);
+  color: var(--head-2);
 }
 
 h3 {
-  font-size: 19px;
+  font-size: 22px;
   line-height: 1.25;
-  font-weight: 700;
   margin-top: 24px;
   margin-bottom: 8px;
-  color: var(--mauve);
+  color: var(--head-3);
 }
 
 h3 a {
-  color: var(--mauve);
+  color: var(--head-3);
   text-decoration: none;
 }
 
@@ -160,19 +631,37 @@ h3 a:hover {
 }
 
 /* ---------------------------------------------------------------
-   Blurb: floated image + caption, text wraps around it
+   Bio: portrait beside the text
+   This was a floated image with the copy wrapping around it. A float
+   only reads well when it ends on a paragraph boundary, and it does
+   not: the last paragraph began just inside the image's shadow, so
+   its first line was indented and every line after it snapped back
+   to the margin, which looked like a rendering fault. A grid cannot
+   land a boundary mid-paragraph at all.
    --------------------------------------------------------------- */
-.blurb {
-  max-width: 100%;
-  padding: 10px;
-  float: left;
-  margin-right: 20px;
-  margin-bottom: 20px;
-  height: auto;
+.bio {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 0 24px;
+  align-items: start;
 }
 
+.bio-text > p:last-child {
+  margin-bottom: 0;
+}
+
+.blurb {
+  max-width: 100%;
+  margin: 0 0 20px;
+}
+
+/* Fixed box with a crop, so swapping the photo for one of a different shape
+   changes what is trimmed rather than stretching the face. */
 .blurb img {
   display: block;
+  width: 240px;
+  height: 181px;
+  object-fit: cover;
   border-radius: 4px;
 }
 
@@ -184,21 +673,128 @@ h3 a:hover {
 }
 
 /* ---------------------------------------------------------------
-   Project thumbnails
-   Same float-and-wrap idea as .blurb, but these come from screenshots
-   rather than one known source, so the box is fixed and the image is
-   cropped to fill it. Without object-fit a stray ratio squashes the UI
-   in the shot. Nothing needs to clear these: h2 and h3 both set
-   clear: both, so an entry's float can never ride into the next one.
+   Project cards
+   A two-column grid of bordered cards, each led by a screenshot.
+   This is the one part of the page that is not plain-web: the
+   projects are the thing worth showing, and a 240px floated
+   thumbnail was too small to show anything in them.
    --------------------------------------------------------------- */
-.shot {
-  float: left;
-  width: 240px;
-  height: 135px;
-  object-fit: cover;
-  margin: 0 16px 12px 0;
+.projects {
+  display: grid;
+  /* minmax(0, 1fr) rather than 1fr: a grid track's default min-width is
+     auto, so a long unbroken string in a card would push the column wider
+     than its share and break the two-up. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 4px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: 6px;
+  /* Clips the screenshot's square corners to the card's rounded ones. */
+  overflow: hidden;
+}
+
+.card-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--line);
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  /* Fills the card so card-foot's auto margin has room to push against. */
+  flex: 1;
+  padding: 14px 16px 12px;
+}
+
+.card h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.card p {
+  font-size: 15px;
+  /* Looser than the body rule: these lines are short, and 19px leading on a
+     narrow measure reads cramped. */
+  line-height: 20px;
+  margin-bottom: 12px;
+}
+
+/* Pinned to the bottom by the auto margin, so chips and icons sit on one
+   line across every card no matter how long the description runs. */
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.card-foot .chips {
+  margin-bottom: 0;
+}
+
+.card-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+
+/* Icons are links, so they inherit the bold underlined link rule and its
+   colour. Both have to be undone or each glyph sits on a stray underline. */
+.card-links a {
+  display: inline-flex;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.card-links a:visited {
+  color: var(--ink);
+}
+
+.card-links a:hover {
+  color: var(--head-3);
+}
+
+.card-links svg {
+  display: block;
+  width: 17px;
+  height: 17px;
+}
+
+/* Rendered only when a project actually has a deployed URL. */
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  font-family: var(--font-archivo), "Archivo", Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--live);
+}
+
+.live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 /* ---------------------------------------------------------------
@@ -230,21 +826,28 @@ h3 a:hover {
   margin-bottom: 4px;
 }
 
-/* Toolkit rows: label on the left, chips on the right */
-.kit-row {
-  display: flex;
-  flex-wrap: wrap;
+/* Toolkit: labels down the left, chips to their right. A single grid for the
+   whole section, not a flex row each, so `max-content` measures the longest
+   label once and every chip group lines up against it. The old per-row layout
+   needed a hardcoded label width, which quietly broke the alignment the moment
+   a label outgrew it. */
+.kit {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 10px 16px;
   align-items: baseline;
-  gap: 4px 12px;
   margin-bottom: 10px;
 }
 
 .kit-label {
   font-family: var(--font-archivo), "Archivo", Helvetica, Arial, sans-serif;
   font-weight: 700;
-  color: var(--mauve);
+  color: var(--head-3);
   font-size: 14px;
-  min-width: 90px;
+}
+
+.kit .chips {
+  margin-bottom: 0;
 }
 
 /* Dates / small meta text sitting under an entry. Deliberately not mauve: it
@@ -252,7 +855,7 @@ h3 a:hover {
 .meta {
   font-size: 12px;
   line-height: 15px;
-  color: #8a8a8a;
+  color: var(--ink-soft);
   margin-bottom: 8px;
 }
 
@@ -354,7 +957,7 @@ button[disabled] {
   /* Must stay in sync with HAZE in instancing-demo.tsx. The canvas is
      transparent and the scene fog fades to this exact value, which is what
      lets the far trees dissolve into the stage instead of ending at an edge. */
-  background: #f1eee9;
+  background: var(--stage);
   overflow: hidden;
 }
 
@@ -378,7 +981,7 @@ button[disabled] {
   margin-top: 8px;
   font-size: 12px;
   line-height: 16px;
-  color: #8a8a8a;
+  color: var(--ink-soft);
 }
 
 /* The live figures are the point; the prose around them is support. */
@@ -402,33 +1005,37 @@ button[disabled] {
    --------------------------------------------------------------- */
 @media screen and (max-width: 800px) {
   h1 {
-    font-size: 38px;
-    letter-spacing: 1px;
+    font-size: 44px;
+    letter-spacing: 0.3px;
     margin-bottom: 20px;
-    -webkit-text-stroke-width: 1.2px;
+    /* Thinner than desktop, not thicker: a stroke is an absolute width, so
+       holding it fixed while the type shrinks eats proportionally more of
+       each letter. The old 1.2px here was heavier than the desktop rule. */
+    -webkit-text-stroke-width: 0.9px;
   }
 
   h2 {
-    font-size: 22px;
+    font-size: 26px;
   }
 
-  .blurb {
-    float: none;
-    margin-right: 0;
-    padding-left: 0;
+  /* No room for a portrait column beside the text; stack them. */
+  .bio {
+    grid-template-columns: 1fr;
   }
 
-  /* A 240px float on a phone leaves the description about ten characters
-     wide, so the shot stops floating and spans the column instead. */
-  .shot {
-    float: none;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    margin-right: 0;
+  /* Two cards side by side on a phone leaves each about 160px wide, which
+     is narrower than the screenshots need to say anything. */
+  .projects {
+    grid-template-columns: 1fr;
   }
 
-  .kit-label {
-    min-width: 100%;
+  /* No room for a label column beside the chips; stack them instead. */
+  .kit {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .kit .chips {
+    margin-bottom: 10px;
   }
 }

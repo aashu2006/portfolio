@@ -26,8 +26,17 @@ const CONE_HEIGHT = 2.2;
 /** Every trunk base rests on this plane. */
 const GROUND_Y = -4;
 
-/** Haze colour. Matched to the stage background so the forest melts into it. */
-const HAZE = 0xf1eee9;
+/**
+ * Fallback haze colour, used only if --stage cannot be read. The live value
+ * comes from that custom property so the fog tracks the theme: the canvas is
+ * transparent, and the fog has to fade to whatever the stage currently is or
+ * the far trees stop at a visible hard edge.
+ */
+const HAZE_FALLBACK = "#f1eee9";
+
+const readStage = () =>
+  getComputedStyle(document.documentElement).getPropertyValue("--stage").trim() ||
+  HAZE_FALLBACK;
 
 type Status = "idle" | "loading" | "running" | "unsupported";
 
@@ -92,7 +101,8 @@ export const InstancingDemo = () => {
       // Distance haze, coloured to match the stage. Far trees dissolve into
       // the page rather than stopping at a visible edge, and it hides the rim
       // of the ground disc entirely.
-      scene.fog = new THREE.Fog(HAZE, 22, 92);
+      const fog = new THREE.Fog(new THREE.Color(readStage()), 22, 92);
+      scene.fog = fog;
 
       const camera: PerspectiveCamera = new THREE.PerspectiveCamera(
         36,
@@ -299,9 +309,23 @@ export const InstancingDemo = () => {
         };
       }
 
+      // The stage colour moves with the theme, so the fog has to follow it or
+      // a dark page gets a pale halo where the forest fades out. The redraw
+      // matters for the reduced-motion path specifically: it rendered one
+      // frame and has no loop to pick the new colour up on its own.
+      const themeWatcher = new MutationObserver(() => {
+        fog.color.set(readStage());
+        if (reducedMotion) renderer.render(scene, camera);
+      });
+      themeWatcher.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"],
+      });
+
       const stopAnimation = cleanupScene;
       cleanupScene = () => {
         stopAnimation?.();
+        themeWatcher.disconnect();
         resizeObserver.disconnect();
         groundGeometry.dispose();
         groundMaterial.dispose();
