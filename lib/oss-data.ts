@@ -12,10 +12,10 @@ export const ossWork: OSSWork[] = [
   {
     org: "Processing Foundation",
     project: "p5.js",
-    role: "Steward, Micrograntee 2026 - WebGPU Instancing",
+    role: "Developer in Residence (p5.js 2.6), Software Grantee 2026, Org Member",
     period: "since 2025",
     description:
-      "Designed and implemented the instances(n).model() API and instanceIndex system for WebGPU instanced rendering. 30+ merged PRs across core, website, and the web editor. Now reviews and merges contributions as a project steward.",
+      "Designed and implemented the instances(n).model() API and instanceIndex system for WebGPU instanced rendering, shipped in p5.js 2.4. 30+ merged PRs across core, website, and the web editor. Now Developer in Residence for the 2.6 release, working on shapes and colors performance.",
     link: "https://github.com/processing/p5.js",
     tags: ["WebGL", "WebGPU", "JavaScript", "Open Source"],
   },

@@ -30,12 +30,13 @@ export const projects: Project[] = [
     image: "/projects/split-it-wise.png",
   },
   {
-    title: "File-Lens",
-    description: "Local storage analyzer - find what's eating your disk space.",
-    githubLink: "https://github.com/aashu2006/file-lens",
-    liveLink: "https://filelens.vercel.app",
-    techStack: ["Flask", "Python"],
-    image: "/projects/file-lens.png",
+    title: "Dune",
+    description:
+      "Ask where a change belongs in any codebase and get the file, the reason and cited lines. Remembers what your team already ruled out, and serves AI agents over MCP.",
+    githubLink: "https://github.com/aashu2006/dune",
+    liveLink: "https://main.ds3vblvj49p71.amplifyapp.com/",
+    techStack: ["TypeScript", "AWS Lambda", "DynamoDB", "tree-sitter", "MCP"],
+    image: "/projects/dune.jpg",
   },
   {
     title: "DocRAG",
@@ -46,9 +47,9 @@ export const projects: Project[] = [
     image: "/projects/docrag.png",
   },
   {
-    title: "Paro",
+    title: "Paro Studio",
     description:
-      "Creative AI platform for discovering and sharing generated visuals alongside the prompts behind them.",
+      "Premium design prompts. See the image, copy the prompt.",
     githubLink: "https://github.com/paro-studio/web",
     liveLink: "https://parostudios.in",
     techStack: ["React", "TypeScript", "Vite", "Supabase", "TailwindCSS"],

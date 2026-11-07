@@ -384,7 +384,11 @@ export const InstancingDemo = () => {
           &middot; {TREE_COUNT} trees, each a trunk and {LAYERS_PER_TREE}{" "}
           stacked cones, batched into one mesh per geometry and positioned
           entirely on the GPU. This is what{" "}
-          <a href="https://medium.com/processing-foundation/drawing-a-forest-in-one-line-a-preview-of-instancing-in-p5-strands-a2e93f9c9e04">
+          <a
+            href="https://medium.com/processing-foundation/drawing-a-forest-in-one-line-a-preview-of-instancing-in-p5-strands-a2e93f9c9e04"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             instances(500)
           </a>{" "}
           does in p5.strands.

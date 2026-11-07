@@ -34,10 +34,8 @@
    the heading hierarchy inverts, the same trap documented for light.
 
    Dark deliberately spends almost no colour: headings and links go near-white
-   and the ember survives only on the microgrant badge, a focus ring and an
-   error message. Keeping it that scarce is what lets the badge read as a
-   credential instead of as decoration. That is
-   the one thing taken from samworks.vercel.app, whose whole character is the
+   and the ember survives only on a focus ring and an error message. That
+   restraint is the one thing taken from samworks.vercel.app, whose whole character is the
    restraint. Light keeps the ember and mauve, which is the xnze.ro identity
    this site is built on. The two references disagree, and each theme follows
    the one that suits it.
@@ -225,8 +223,7 @@ h1.masthead {
    labels: at this size the marks are recognisable on their own,
    and boxing them would compete with the serif name above.
    --------------------------------------------------------------- */
-/* Marks and badge share one row. With only two logos the row was mostly
-   empty, and the microgrant is the thing worth putting in that space. */
+/* The social marks' row under the masthead. */
 .intro-meta {
   display: flex;
   align-items: center;
@@ -242,34 +239,6 @@ h1.masthead {
   list-style: none;
   margin: 0;
   padding: 0;
-}
-
-/* Deliberately the loudest small thing on the page, in both themes. Dark
-   otherwise spends almost no colour, which is exactly what makes one ember
-   pill read as a credential rather than as decoration. Contrast on --page:
-   5.9:1 light, 7.3:1 dark. */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 12px;
-  font-family: var(--font-archivo), "Archivo", Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0.02em;
-  color: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 999px;
-}
-
-.badge::before {
-  content: "";
-  flex: none;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
 }
 
 .socials li {
@@ -648,6 +617,47 @@ h3 a:hover {
 
 .bio-text > p:last-child {
   margin-bottom: 0;
+}
+
+/* The YouTube link in the bio, drawn as a small red pill. #e00000 rather than
+   YouTube's #ff0000 so the white text clears 4.5:1 (about 5:1 here). Same red
+   in both themes, so it needs no dark-mode rule. */
+.yt-pill,
+.yt-pill:visited {
+  display: inline-block;
+  padding: 0 0.5em 0 0.4em;
+  border-radius: 999px;
+  background: #e00000;
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.18s, transform 0.18s;
+}
+
+.yt-pill:hover {
+  color: #ffffff;
+  background: #b80000;
+  transform: translateY(-1px);
+}
+
+/* inline-block undoes Tailwind preflight's `svg { display: block }`, which
+   would otherwise stack the icon above the word. */
+.yt-pill svg {
+  display: inline-block;
+  width: 1.05em;
+  height: 1.05em;
+  margin-right: 0.3em;
+  vertical-align: -0.17em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yt-pill {
+    transition: none;
+  }
+
+  .yt-pill:hover {
+    transform: none;
+  }
 }
 
 .blurb {

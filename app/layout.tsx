@@ -40,11 +40,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://akshatpatil.vercel.app"),
   title: "akshat patil",
   description:
-    "19, CS undergrad in Bengaluru, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26, building things, contributing to open source.",
+    "20, CS undergrad in Bengaluru, currently learning LLMs to become an AI engineer. Full Stack Developer Intern at StayIn, p5.js Developer in Residence, Processing Foundation Software Grantee '26.",
   openGraph: {
     title: "akshat patil",
     description:
-      "19, CS undergrad in Bengaluru, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26.",
+      "20, CS undergrad in Bengaluru, currently learning LLMs to become an AI engineer. Full Stack Developer Intern at StayIn, p5.js Developer in Residence, Processing Foundation Software Grantee '26.",
     url: "https://akshatpatil.vercel.app",
     siteName: "akshat patil",
     images: [
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "akshat patil",
     description:
-      "19, CS undergrad in Bengaluru, currently learning LLMs to become an AI engineer. Processing Foundation Micrograntee '26.",
+      "20, CS undergrad in Bengaluru, currently learning LLMs to become an AI engineer. Full Stack Developer Intern at StayIn, p5.js Developer in Residence, Processing Foundation Software Grantee '26.",
     images: ["/akshat.jpg"],
   },
 };

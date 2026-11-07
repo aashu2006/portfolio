@@ -7,13 +7,20 @@ import { ContactForm } from "@/components/contact-form";
 import { InstancingDemo } from "@/components/instancing-demo";
 import { SiteNav } from "@/components/site-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { GitHubIcon, GlobeIcon, XIcon } from "@/components/icons";
+import {
+  GitHubIcon,
+  GlobeIcon,
+  LinkedInIcon,
+  XIcon,
+  YouTubeIcon,
+} from "@/components/icons";
 
 const toolkit = [
   { label: "Languages", items: ["JavaScript", "Python", "Go"] },
   {
     label: "AI/ML & LLMs",
     items: [
+      "Machine Learning",
       "NumPy",
       "Pandas",
       "Matplotlib",
@@ -22,8 +29,6 @@ const toolkit = [
       "TensorFlow",
       "LLM API Integration",
       "RAG",
-      "Supervised Learning",
-      "Neural Network Fundamentals",
     ],
   },
   {
@@ -42,7 +47,7 @@ const toolkit = [
 ];
 
 /**
- * Just the two marks, no labels. YouTube and my address are left out because
+ * Just the marks, no labels. YouTube and my address are left out because
  * the bio and the Get in Touch section already link them, and a second copy in
  * the header earns nothing.
  *
@@ -50,18 +55,27 @@ const toolkit = [
  * is found by someone who read far enough to want it rather than offered to
  * every passing visitor. Do not promote it back to the masthead.
  *
- * Icons for LinkedIn, YouTube and Mail are still in components/icons.tsx if
- * any of them are ever wanted back.
+ * Icons for YouTube and Mail are still in components/icons.tsx if either is
+ * ever wanted back.
  */
 const socials = [
   { label: "GitHub", href: "https://github.com/aashu2006", Icon: GitHubIcon },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/akshatpatil107/",
+    Icon: LinkedInIcon,
+  },
   { label: "X", href: "https://x.com/softaspause", Icon: XIcon },
 ];
 
+/** Spread onto every link that leaves the site so it opens in a new tab. */
+const external = { target: "_blank", rel: "noopener noreferrer" } as const;
+
 const currently = [
-  "building the WebGPU instancing API for p5.strands as a Processing Foundation micrograntee",
-  "reviewing PRs as a p5.js steward",
-  "learning LLMs and the engineering around them, alongside ML foundations (supervised learning, neural nets from scratch in NumPy)",
+  "full stack developer intern at StayIn",
+  "profiling shapes & colors performance as p5.js Developer in Residence for the 2.6 release",
+  "building Paro Studio: premium design prompts, see the image, copy the prompt",
+  "going deeper on LLMs, machine learning and the engineering around AI systems",
 ];
 
 export default function HomePage() {
@@ -78,24 +92,18 @@ export default function HomePage() {
             <li key={label}>
               {/* No visible text, so the accessible name has to come from the
                   label rather than from the contents. */}
-              <a href={href} aria-label={label}>
+              <a href={href} aria-label={label} {...external}>
                 <Icon />
               </a>
             </li>
           ))}
         </ul>
-
-        {/* The one credential worth stating up front rather than leaving to
-            be discovered three paragraphs into the bio. */}
-        <span className="badge">
-          Processing Foundation Micrograntee &rsquo;26
-        </span>
       </div>
 
       <p>
         <strong>Hello! </strong> I&apos;m a CS undergrad from Indore, studying
-        in Bengaluru. Open-source contributor and graphics tinkerer, currently
-        working my way into machine learning.
+        in Bengaluru. Open-source contributor and graphics tinkerer, now going
+        deeper into machine learning and AI systems.
       </p>
 
       <h2 id="bio">Bio</h2>
@@ -106,7 +114,7 @@ export default function HomePage() {
               to fill it, so a replacement photo of any shape stays
               undistorted. */}
           <Image
-            src="/avatar.jpg"
+            src="/portrait.jpg"
             width={240}
             height={181}
             alt="Akshat Patil"
@@ -117,35 +125,71 @@ export default function HomePage() {
 
         <div className="bio-text">
           <p>
-            Akshat is 19 and from Indore, now a sophomore studying computer
-            science in Bengaluru and graduating in 2029. He is learning{" "}
-            <strong>LLMs</strong> with the aim of working as an AI engineer. Since
-            2025 he has worked on{" "}
-            <a href="https://github.com/processing/p5.js">p5.js</a> at the{" "}
-            <strong>Processing Foundation</strong>, where he is now a steward on the
-            project and a 2026 micrograntee building the WebGPU instancing API for
-            p5.strands. He also contributes to{" "}
-            <a href="https://github.com/kubestellar/kubestellar">KubeStellar</a>{" "}
-            under the CNCF, the Linux Foundation Decentralized Trust{" "}
-            <a href="https://github.com/hiero-ledger">Hiero</a> project, and the
-            machine-readable{" "}
-            <a href="https://github.com/riscv/riscv-unified-db">
-              RISC-V specification
+            I&apos;m 20 and from Indore, now a sophomore studying computer
+            science in Bengaluru and graduating in 2029. I work as a full stack
+            developer intern at{" "}
+            <a href="https://stayin.co.in/" {...external}>
+              StayIn
             </a>{" "}
-            at RISC-V International.
+            and I&apos;m going deeper into <strong>LLMs</strong>{" "}
+            and AI systems, aiming to work as an AI
+            engineer. Since 2025 I&apos;ve worked on{" "}
+            <a href="https://github.com/processing/p5.js" {...external}>
+              p5.js
+            </a>{" "}
+            at the <strong>Processing Foundation</strong>, where I built the
+            WebGPU instancing API for p5.strands that shipped in p5.js 2.4.
+            I&apos;m now an org member, a 2026 Processing Foundation software
+            grantee, and Developer in Residence for the 2.6 release, working on
+            shapes and colors performance. I also build{" "}
+            <a href="https://parostudios.in" {...external}>
+              Paro Studio
+            </a>
+            .
           </p>
 
           <p>
-            His interests sit where graphics programming, systems work, and machine
+            Along the way I&apos;ve also contributed to{" "}
+            <a href="https://github.com/kubestellar/kubestellar" {...external}>
+              KubeStellar
+            </a>
+            ,{" "}
+            <a href="https://github.com/hiero-ledger" {...external}>
+              Hiero
+            </a>
+            , the{" "}
+            <a href="https://github.com/riscv/riscv-unified-db" {...external}>
+              RISC-V Unified DB
+            </a>
+            ,{" "}
+            <a href="https://github.com/Nano-Collective/nanocoder" {...external}>
+              NanoCoder
+            </a>{" "}
+            and{" "}
+            <a href="https://github.com/GreedyBear-Project/GreedyBear" {...external}>
+              GreedyBear
+            </a>{" "}
+            (Honeynet).
+          </p>
+
+          <p>
+            My interests sit where graphics programming, systems work, and machine
             learning overlap: rendering pipelines, the plumbing that makes them
             fast, and the models that are starting to sit on top of both. Alongside
-            the code he makes videos on{" "}
-            <a href="https://www.youtube.com/@softaspause">YouTube</a> about what he
-            is learning as he learns it.
+            the code I make videos on{" "}
+            <a
+              className="yt-pill"
+              href="https://www.youtube.com/@softaspause"
+              {...external}
+            >
+              <YouTubeIcon />
+              YouTube
+            </a>{" "}
+            about what I&apos;m learning as I learn it.
           </p>
 
           <p>
-            Much like Sho Yamato running towards the finish line, he is curious
+            Much like Sho Yamato running towards the finish line, I&apos;m curious
             enough to keep learning and stubborn enough to keep building.
           </p>
         </div>
@@ -164,7 +208,7 @@ export default function HomePage() {
       {ossWork.map((work) => (
         <div key={work.project}>
           <h3>
-            <a href={work.link}>
+            <a href={work.link} {...external}>
               {work.project} / {work.org}
             </a>
           </h3>
@@ -206,7 +250,9 @@ export default function HomePage() {
             )}
             <div className="card-body">
               <h3>
-                <a href={project.githubLink}>{project.title}</a>
+                <a href={project.githubLink} {...external}>
+                  {project.title}
+                </a>
                 {/* Only claims "Live" when there is a URL behind it. */}
                 {project.liveLink && <span className="live">Live</span>}
               </h3>
@@ -226,6 +272,7 @@ export default function HomePage() {
                     <a
                       href={project.liveLink}
                       aria-label={`${project.title}, live site`}
+                      {...external}
                     >
                       <GlobeIcon />
                     </a>
@@ -233,6 +280,7 @@ export default function HomePage() {
                   <a
                     href={project.githubLink}
                     aria-label={`${project.title} on GitHub`}
+                    {...external}
                   >
                     <GitHubIcon />
                   </a>
@@ -248,7 +296,9 @@ export default function HomePage() {
       {posts.map((post) => (
         <div key={post.title}>
           <h3>
-            <a href={post.url}>{post.title}</a>
+            <a href={post.url} {...external}>
+              {post.title}
+            </a>
           </h3>
           <p className="meta">
             {post.publication} &middot; {post.date}
@@ -291,12 +341,15 @@ export default function HomePage() {
         Send a message below and it lands in my inbox. If you would rather not
         use a form, mail{" "}
         <a href="mailto:akshatp439@gmail.com">akshatp439@gmail.com</a> directly. My{" "}
-        <a href="/resume.pdf">resume is here as a PDF</a> if you need it.
+        <a href="/resume.pdf" {...external}>
+          resume is here as a PDF
+        </a>{" "}
+        if you need it.
       </p>
 
       <ContactForm />
 
-      <p className="updated">Last updated: August 2026</p>
+      <p className="updated">Last updated: November 2026</p>
     </>
   );
 }
